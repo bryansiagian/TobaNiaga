@@ -1,0 +1,72 @@
+<?php
+
+namespace App\Models;
+
+use Illuminate\Database\Eloquent\Model;
+
+class Umkm extends Model
+{
+    protected $table = 'umkm';
+
+    protected $fillable = [
+        'owner_id',
+        'kategori_id',
+        'status_id',
+        'nama_umkm',
+        'slug',
+        'deskripsi',
+        'logo',
+        'banner',
+        'alamat',
+        'kota',
+        'no_hp',
+        'email',
+        'jam_operasional',
+        'is_buka',
+        'rating',
+        'total_ulasan',
+    ];
+
+    protected $casts = [
+        'is_buka'      => 'boolean',
+        'rating'       => 'float',
+        'total_ulasan' => 'integer',
+    ];
+
+    // ── Relationships ──────────────────────────────────────────
+
+    public function owner()
+    {
+        return $this->belongsTo(User::class, 'owner_id');
+    }
+
+    public function kategori()
+    {
+        return $this->belongsTo(KategoriUmkm::class, 'kategori_id');
+    }
+
+    public function status()
+    {
+        return $this->belongsTo(StatusUmkm::class, 'status_id');
+    }
+
+    public function produk()
+    {
+        return $this->hasMany(Produk::class, 'umkm_id');
+    }
+
+    public function pesanan()
+    {
+        return $this->hasMany(Pesanan::class, 'umkm_id');
+    }
+
+    public function promo()
+    {
+        return $this->hasMany(Promo::class, 'umkm_id');
+    }
+
+    public function ulasan()
+    {
+        return $this->hasMany(Ulasan::class, 'umkm_id');
+    }
+}
