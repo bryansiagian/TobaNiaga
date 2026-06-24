@@ -218,6 +218,13 @@
                     Kategori UMKM
                 </a>
 
+                <a href="{{ route('admin.kategori-produk.index') }}" class="sidebar-link {{ request()->routeIs('admin.kategori-produk.*') ? 'active' : '' }}">
+                    <svg class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="1.8">
+                        <path stroke-linecap="round" stroke-linejoin="round" d="M7 7h.01M7 3h5c.512 0 1.024.195 1.414.586l7 7a2 2 0 010 2.828l-7 7a2 2 0 01-2.828 0l-7-7A2 2 0 013 12V7a2 2 0 012-2z"/>
+                    </svg>
+                    Kategori Produk
+                </a>
+
                 <a href="#" class="sidebar-link {{ request()->routeIs('admin.pesanan.*') ? 'active' : '' }}">
                     <svg class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="1.8">
                         <path stroke-linecap="round" stroke-linejoin="round" d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2"/>
@@ -233,13 +240,13 @@
                     </svg>
                     Pengaturan
                 </a>
-            @endrole
+                @endrole
 
                 {{-- ── SALES ── --}}
                 @role('sales')
                     <p class="font-mono text-[10px] uppercase tracking-widest text-ink/30 px-3 pt-5 pb-1.5">Toko</p>
 
-                    <a href="#" class="sidebar-link {{ request()->routeIs('sales.produk.*') ? 'active' : '' }}">
+                    <a href="{{ route('sales.produk.index') }}" class="sidebar-link {{ request()->routeIs('sales.produk.*') ? 'active' : '' }}">
                         <svg class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="1.8">
                             <path stroke-linecap="round" stroke-linejoin="round" d="M20 7l-8-4-8 4m16 0l-8 4m8-4v10l-8 4m0-10L4 7m8 4v10M4 7v10l8 4"/>
                         </svg>
@@ -262,7 +269,7 @@
 
                     <p class="font-mono text-[10px] uppercase tracking-widest text-ink/30 px-3 pt-5 pb-1.5">Akun</p>
 
-                    <a href="#" class="sidebar-link">
+                    <a href="{{ route('sales.profil.index') }}" class="sidebar-link {{ request()->routeIs('sales.profil.*') ? 'active' : '' }}">
                         <svg class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="1.8">
                             <path stroke-linecap="round" stroke-linejoin="round" d="M19 21V5a2 2 0 00-2-2H7a2 2 0 00-2 2v16m14 0h2M5 21H3m16 0h-5m-7 0h7"/>
                         </svg>

@@ -8,20 +8,21 @@ class PesananDetail extends Model
 {
     protected $table = 'pesanan_detail';
 
+    public $timestamps = false;
+
     protected $fillable = [
         'pesanan_id',
         'produk_id',
-        'nama_produk',
-        'harga_satuan',
+        'nama_produk_snapshot',
+        'harga_satuan_snapshot',
         'jumlah',
         'subtotal',
-        'catatan',
     ];
 
     protected $casts = [
-        'harga_satuan' => 'float',
-        'jumlah'       => 'integer',
-        'subtotal'     => 'float',
+        'harga_satuan_snapshot' => 'float',
+        'jumlah'                => 'integer',
+        'subtotal'              => 'float',
     ];
 
     // ── Relationships ──────────────────────────────────────────

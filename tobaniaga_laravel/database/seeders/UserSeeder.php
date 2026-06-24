@@ -50,13 +50,36 @@ class UserSeeder extends Seeder
                 ['email' => $data['email']],
                 [
                     ...$data,
-                    'password' => Hash::make('password'),
-                    'status_id' => $statusAktifId,
+                    'password'          => Hash::make('password'),
+                    'status_id'         => $statusAktifId,
                     'email_verified_at' => now(),
                 ]
             );
 
             $user->assignRole($role);
+
+            // Buat UMKM untuk sales jika belum ada
+            if ($role === 'sales' && !$user->umkm) {
+                $statusVerifId = DB::table('status_verifikasi_umkm')->where('kode', 'pending')->value('id');
+                $statusUmkmId  = DB::table('status_umkm')->where('kode', 'aktif')->value('id');
+                $kategoriId    = DB::table('kategori_umkm')->value('id'); // ambil kategori pertama
+
+                \App\Models\Umkm::create([
+                    'owner_id'             => $user->id,
+                    'kategori_id'          => $kategoriId,
+                    'nama_umkm'            => 'UMKM ' . $user->nama,
+                    'slug'                 => \Illuminate\Support\Str::slug('umkm-' . $user->id),
+                    'deskripsi'            => 'Deskripsi UMKM ' . $user->nama,
+                    'alamat'               => 'Jl. Contoh No. 1',
+                    'provinsi'             => 'Sumatera Utara',
+                    'kabupaten'            => 'Kabupaten Toba',
+                    'kecamatan'            => '',
+                    'desa'                 => '',
+                    'no_hp_wa'             => $user->no_hp,
+                    'status_verifikasi_id' => $statusVerifId,
+                    'status_id'            => $statusUmkmId,
+                ]);
+            }
         }
     }
 }

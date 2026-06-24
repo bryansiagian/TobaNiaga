@@ -6,22 +6,18 @@ use Illuminate\Database\Eloquent\Model;
 
 class FotoProduk extends Model
 {
-    protected $table = 'foto_produk';
+    protected $table = 'produk_foto';
+
+    public $timestamps = false;
 
     protected $fillable = [
         'produk_id',
-        'url',
+        'url_foto',
         'urutan',
     ];
 
-    protected $casts = [
-        'urutan' => 'integer',
-    ];
-
-    // ── Relationships ──────────────────────────────────────────
-
     public function produk()
     {
-        return $this->belongsTo(Produk::class, 'produk_id');
+        return $this->belongsTo(Produk::class);
     }
 }

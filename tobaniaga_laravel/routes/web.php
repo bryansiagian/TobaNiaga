@@ -14,8 +14,16 @@ use Illuminate\Support\Facades\Route;
 
 // ── Landing Page ───────────────────────────────────────────
 Route::get('/', function () {
-    return view('welcome');
+    $produkTerbaru = \App\Models\Produk::with(['fotoProduk', 'umkm', 'kategori'])
+        ->latest()
+        ->take(10)
+        ->get();
+    return view('welcome', compact('produkTerbaru'));
 })->name('welcome');
+
+// Halaman katalog produk publik (customer & guest) — dengan filter
+Route::get('/produk', [App\Http\Controllers\ProdukPublikController::class, 'index'])->name('produk.index');
+Route::get('/produk/{slug}', [App\Http\Controllers\ProdukPublikController::class, 'detail'])->name('produk.detail');
 
 // ── Guest Routes (belum login) ─────────────────────────────
 Route::middleware('guest')->group(function () {
@@ -79,5 +87,27 @@ Route::middleware('auth')->group(function () {
         Route::post('/users/{user}/aktivasi', [AdminController::class, 'aktivasiUser'])->name('users.aktivasi');
         Route::post('/users/{user}/toggle-status', [AdminController::class, 'toggleUserStatus'])->name('users.toggle-status');
         Route::delete('/users/{user}', [AdminController::class, 'destroyUser'])->name('users.destroy');
+
+        // Kelola Kategori Produk
+        Route::get('/kategori-produk', [App\Http\Controllers\Admin\AdminKategoriProdukController::class, 'index'])->name('kategori-produk.index');
+        Route::post('/kategori-produk', [App\Http\Controllers\Admin\AdminKategoriProdukController::class, 'store'])->name('kategori-produk.store');
+        Route::put('/kategori-produk/{kategoriProduk}', [App\Http\Controllers\Admin\AdminKategoriProdukController::class, 'update'])->name('kategori-produk.update');
+        Route::delete('/kategori-produk/{kategoriProduk}', [App\Http\Controllers\Admin\AdminKategoriProdukController::class, 'destroy'])->name('kategori-produk.destroy');
+    });
+
+    Route::middleware(['auth', 'role:sales'])->prefix('sales')->name('sales.')->group(function () {
+
+        // Produk
+        Route::get('/produk', [App\Http\Controllers\Sales\SalesProdukController::class, 'index'])->name('produk.index');
+        Route::post('/produk', [App\Http\Controllers\Sales\SalesProdukController::class, 'store'])->name('produk.store');
+        Route::put('/produk/{produk}', [App\Http\Controllers\Sales\SalesProdukController::class, 'update'])->name('produk.update');
+        Route::delete('/produk/{produk}', [App\Http\Controllers\Sales\SalesProdukController::class, 'destroy'])->name('produk.destroy');
+        Route::delete('/produk/foto/{foto}', [App\Http\Controllers\Sales\SalesProdukController::class, 'destroyFoto'])->name('produk.foto.destroy');
+
+        // Profil
+        Route::get('/profil', [App\Http\Controllers\Sales\SalesProfilController::class, 'index'])->name('profil.index');
+        Route::put('/profil', [App\Http\Controllers\Sales\SalesProfilController::class, 'update'])->name('profil.update');
+
+
     });
 });

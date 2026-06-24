@@ -31,6 +31,10 @@ return new class extends Migration
                   ->constrained('status_produk')
                   ->restrictOnDelete();
             $table->timestamps();
+
+            // Index untuk performa filter di halaman customer.products.index
+            $table->index('harga');
+            $table->index('stok');
         });
 
         Schema::create('produk_foto', function (Blueprint $table) {

@@ -13,7 +13,7 @@ return new class extends Migration
             $table->foreignId('pesanan_id')
                   ->constrained('pesanan')
                   ->cascadeOnDelete();
-            $table->foreignId('customer_id')
+            $table->foreignId('user_id')
                   ->constrained('users')
                   ->cascadeOnDelete();
             $table->foreignId('umkm_id')
@@ -26,7 +26,12 @@ return new class extends Migration
             $table->unsignedTinyInteger('rating')
                   ->comment('1-5');
             $table->text('komentar')->nullable();
-            $table->timestamp('created_at')->useCurrent();
+            $table->json('foto')->nullable()->comment('array path foto ulasan, maks beberapa foto');
+            $table->boolean('is_anonim')->default(false);
+            $table->timestamps();
+
+            // Satu user hanya bisa beri 1 ulasan untuk produk yang sama dalam 1 pesanan
+            $table->unique(['pesanan_id', 'user_id', 'produk_id'], 'ulasan_unik_per_pesanan_produk');
         });
     }
 
