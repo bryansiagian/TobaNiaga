@@ -2,6 +2,7 @@
 
 use App\Http\Controllers\Auth\AuthController;
 use App\Http\Controllers\Admin\AdminController;
+use App\Http\Controllers\Admin\KategoriUmkmController;
 use Illuminate\Support\Facades\Route;
 
 /*
@@ -55,6 +56,12 @@ Route::middleware('auth')->group(function () {
     // ── Admin Routes ───────────────────────────────────────
     Route::prefix('admin')->name('admin.')->middleware('role:admin')->group(function () {
         Route::get('/dashboard',          [AdminController::class, 'dashboard'])->name('dashboard');
+
+        // Kelola Kategori UMKM
+        Route::get('/kategori-umkm', [KategoriUmkmController::class, 'index'])->name('kategori-umkm.index');
+        Route::post('/kategori-umkm', [KategoriUmkmController::class, 'store'])->name('kategori-umkm.store');
+        Route::put('/kategori-umkm/{kategori_umkm}', [KategoriUmkmController::class, 'update'])->name('kategori-umkm.update');
+        Route::delete('/kategori-umkm/{kategori_umkm}', [KategoriUmkmController::class, 'destroy'])->name('kategori-umkm.destroy');
 
         // Kelola UMKM
         Route::get('/umkm/pending',       [AdminController::class, 'umkmPending'])->name('umkm.pending');
