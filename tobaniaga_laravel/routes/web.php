@@ -39,14 +39,14 @@ Route::middleware('auth')->group(function () {
     })->name('customer.dashboard')->middleware('role:customer');
 
     Route::get('/sales/dashboard', function () {
-        return 'Dashboard Sales — TobaNiaga';
-    })->name('operator.dashboard')->middleware('role:sales');
+        return view('sales.dashboard');
+    })->name('sales.dashboard')->middleware('role:sales');
 
     Route::get('/admin/dashboard', function () {
-        return 'Dashboard Admin — TobaNiaga';
+        return view('admin.dashboard');
     })->name('admin.dashboard')->middleware('role:admin');
 
     Route::get('/courier/dashboard', function () {
-        return 'Dashboard Kurir — TobaNiaga';
+        return view('courier.dashboard');
     })->name('courier.dashboard')->middleware('role:courier');
 });
