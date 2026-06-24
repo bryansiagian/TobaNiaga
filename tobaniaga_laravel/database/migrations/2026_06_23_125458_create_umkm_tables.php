@@ -24,9 +24,11 @@ return new class extends Migration
                   ->constrained('kategori_umkm')
                   ->restrictOnDelete();
             $table->string('nama_umkm');
-            $table->string('slug')->unique();
-            $table->text('deskripsi');
+            $table->string('slug')->unique()->nullable();
+            $table->text('deskripsi')->nullable(); 
             $table->text('alamat');
+            $table->string('provinsi')->default('Sumatera Utara');
+            $table->string('kabupaten')->default('Kabupaten Toba');
             $table->string('kecamatan');
             $table->string('desa');
             $table->decimal('latitude', 10, 7)->nullable()->comment('untuk integrasi OSM/Maps');
@@ -40,6 +42,7 @@ return new class extends Migration
             $table->foreignId('status_id')
                   ->constrained('status_umkm')
                   ->restrictOnDelete();
+            $table->text('catatan_penolakan')->nullable();
             $table->timestamps();
         });
     }
