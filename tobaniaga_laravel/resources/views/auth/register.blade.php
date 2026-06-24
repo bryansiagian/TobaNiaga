@@ -146,8 +146,8 @@
                                 @change="loadDesa()"
                                 class="w-full rounded-lg border border-lake-900/15 px-4 py-2.5 text-ink focus:border-lake-400 focus:ring-1 focus:ring-lake-400 transition-colors bg-paper">
                             <option value="">Pilih kecamatan...</option>
-                            <template x-for="kec in kecamatanList" :key="kec.code">
-                                <option :value="kec.name" :data-code="kec.code" x-text="kec.name"
+                            <template x-for="kec in kecamatanList" :key="kec.id">
+                                <option :value="kec.name" :data-id="kec.id" x-text="kec.name"
                                         :selected="kec.name === '{{ old('kecamatan') }}'"></option>
                             </template>
                         </select>
@@ -162,7 +162,7 @@
                             <option value="">
                                 <span x-text="kecamatanDipilih ? 'Pilih desa...' : 'Pilih kecamatan dulu'"></span>
                             </option>
-                            <template x-for="desa in desaList" :key="desa.code">
+                            <template x-for="desa in desaList" :key="desa.id">
                                 <option :value="desa.name" x-text="desa.name"
                                         :selected="desa.name === '{{ old('desa') }}'"></option>
                             </template>
@@ -216,7 +216,7 @@
 @push('scripts')
 <script>
 // Kode kabupaten Toba di emsifa: 1218
-const KODE_KABUPATEN_TOBA = '1218';
+const KODE_KABUPATEN_TOBA = '1206';
 
 function registerForm() {
     return {
@@ -263,12 +263,11 @@ function registerForm() {
 
         async loadDesa() {
             this.desaList = [];
-            // Cari kode kecamatan dari list
             const kec = this.kecamatanList.find(k => k.name === this.kecamatanDipilih);
             if (!kec) return;
 
             try {
-                const res = await fetch(`https://www.emsifa.com/api-wilayah-indonesia/api/villages/${kec.code}.json`);
+                const res = await fetch(`https://www.emsifa.com/api-wilayah-indonesia/api/villages/${kec.id}.json`);
                 this.desaList = await res.json();
             } catch (e) {
                 console.error('Gagal memuat data desa:', e);

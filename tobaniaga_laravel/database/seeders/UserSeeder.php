@@ -18,25 +18,25 @@ class UserSeeder extends Seeder
         $users = [
             [
                 'nama' => 'Administrator',
-                'email' => 'admin@example.com',
+                'email' => 'admin@gmail.com',
                 'no_hp' => '081234567890',
                 'role' => 'admin',
             ],
             [
                 'nama' => 'Sales User',
-                'email' => 'sales@example.com',
+                'email' => 'sales@gmail.com',
                 'no_hp' => '081234567891',
                 'role' => 'sales',
             ],
             [
                 'nama' => 'Courier User',
-                'email' => 'courier@example.com',
+                'email' => 'courier@gmail.com',
                 'no_hp' => '081234567892',
                 'role' => 'courier',
             ],
             [
                 'nama' => 'Customer User',
-                'email' => 'customer@example.com',
+                'email' => 'customer@gmail.com',
                 'no_hp' => '081234567893',
                 'role' => 'customer',
             ],
