@@ -69,4 +69,12 @@ class Umkm extends Model
     {
         return $this->hasMany(Ulasan::class, 'umkm_id');
     }
+
+    public function statusVerifikasi() {
+        return $this->belongsTo(StatusVerifikasiUmkm::class, 'status_verifikasi_id');
+    }
+    
+    public function statusUmkm() {
+        return $this->belongsTo(StatusUmkm::class, 'status_id');
+    }
 }

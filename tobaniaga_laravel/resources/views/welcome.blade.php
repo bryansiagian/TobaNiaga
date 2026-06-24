@@ -44,7 +44,7 @@
                         <!-- Tombol Nama User -->
                         <button @click="open = !open" @click.outside="open = false"
                                 class="flex items-center gap-2 text-sm font-semibold text-lake-900 bg-lake-900/5 px-4 py-2.5 rounded-lg hover:bg-lake-900/10 transition-colors focus-ring">
-                            <span>{{ Auth::user()->name ?? 'Pengguna' }}</span>
+                            <span>{{ Auth::user()->nama ?? 'Pengguna' }}</span>
                             <svg class="w-4 h-4 transition-transform duration-200" :class="{'rotate-180': open}" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
                                 <path stroke-linecap="round" stroke-linejoin="round" d="M19 9l-7 7-7-7" />
                             </svg>
@@ -62,8 +62,17 @@
                              class="absolute right-0 mt-2 w-48 bg-paper rounded-xl shadow-xl border border-lake-900/10 py-1 z-30 min-w-[200px]"
                              style="display: none;">
 
-                            <a href="/" class="block px-4 py-2.5 text-sm text-ink/80 hover:bg-lake-900/5 transition-colors">
-                                Dashboard Aplikasi
+                            @php
+                                $dashboardRoute = match(true) {
+                                    Auth::user()->hasRole('admin')   => route('admin.dashboard'),
+                                    Auth::user()->hasRole('sales')   => route('sales.dashboard'),
+                                    Auth::user()->hasRole('courier') => route('courier.dashboard'),
+                                    default                          => route('welcome'), // customer
+                                };
+                            @endphp
+
+                            <a href="{{ $dashboardRoute }}" class="block px-4 py-2.5 text-sm text-ink/80 hover:bg-lake-900/5 transition-colors">
+                                Dashboard
                             </a>
 
                             <hr class="border-lake-900/5 my-1">
