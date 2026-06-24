@@ -12,25 +12,26 @@ class Umkm extends Model
         'owner_id',
         'kategori_id',
         'status_id',
+        'status_verifikasi_id',
         'nama_umkm',
         'slug',
         'deskripsi',
-        'logo',
-        'banner',
         'alamat',
-        'kota',
-        'no_hp',
-        'email',
-        'jam_operasional',
-        'is_buka',
-        'rating',
-        'total_ulasan',
+        'provinsi',
+        'kabupaten',
+        'kecamatan',
+        'desa',
+        'no_hp_wa',
+        'latitude',
+        'longitude',
+        'foto_profil',
+        'foto_banner',
+        'catatan_penolakan',
     ];
 
     protected $casts = [
-        'is_buka'      => 'boolean',
-        'rating'       => 'float',
-        'total_ulasan' => 'integer',
+        'latitude'  => 'float',
+        'longitude' => 'float',
     ];
 
     // ── Relationships ──────────────────────────────────────────
@@ -70,11 +71,13 @@ class Umkm extends Model
         return $this->hasMany(Ulasan::class, 'umkm_id');
     }
 
-    public function statusVerifikasi() {
+    public function statusVerifikasi()
+    {
         return $this->belongsTo(StatusVerifikasiUmkm::class, 'status_verifikasi_id');
     }
-    
-    public function statusUmkm() {
+
+    public function statusUmkm()
+    {
         return $this->belongsTo(StatusUmkm::class, 'status_id');
     }
 }

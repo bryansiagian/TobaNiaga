@@ -1,0 +1,49 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>UMKM Diaktifkan Kembali — TobaNiaga</title>
+<style>
+  body { margin: 0; padding: 0; background: #f0f4f8; font-family: Inter, -apple-system, sans-serif; color: #1a1a1a; }
+  .wrap { max-width: 520px; margin: 40px auto; background: #faf8f5; border-radius: 16px; overflow: hidden; border: 1px solid #0f2d4514; }
+  .stripe { height: 6px; background: repeating-linear-gradient(90deg, #8f2333 0 8px, #c49044 8px 14px, #1a4a6b 14px 22px, #faf8f5 22px 26px, #1a4a6b 26px 34px, #c49044 34px 40px, #8f2333 40px 48px); }
+  .header { padding: 32px 40px 24px; border-bottom: 1px solid #0f2d4510; }
+  .logo { font-size: 20px; font-weight: 600; color: #0f2d45; }
+  .body { padding: 36px 40px; }
+  .badge-reactivated { display: inline-block; background: #c4904415; color: #c49044; border: 1px solid #c4904430; border-radius: 6px; padding: 4px 12px; font-size: 12px; font-weight: 600; text-transform: uppercase; letter-spacing: 0.08em; margin-bottom: 20px; }
+  h2 { font-size: 22px; font-weight: 600; color: #0f2d45; margin: 0 0 12px; line-height: 1.3; }
+  p { font-size: 14px; color: #1a1a1a90; line-height: 1.7; margin: 0 0 16px; }
+  .info-box { background: #0f2d4508; border: 1px solid #0f2d4518; border-radius: 8px; padding: 16px; font-size: 13px; color: #0f2d45; line-height: 1.6; margin: 20px 0; }
+  .cta { display: inline-block; background: #0f2d45; color: #faf8f5; font-weight: 600; font-size: 14px; padding: 12px 28px; border-radius: 8px; text-decoration: none; margin-top: 8px; }
+  .footer { padding: 20px 40px 28px; border-top: 1px solid #0f2d4510; }
+  .footer p { font-size: 12px; color: #1a1a1a40; margin: 0; line-height: 1.6; }
+</style>
+</head>
+<body>
+<div class="wrap">
+  <div class="stripe"></div>
+  <div class="header">
+    <div class="logo">TobaNiaga</div>
+  </div>
+  <div class="body">
+    <div class="badge-reactivated">↻ Diaktifkan Kembali</div>
+    <h2>UMKM kamu telah diaktifkan kembali!</h2>
+    <p>Halo <strong>{{ $umkm->owner->nama }}</strong>,</p>
+    <p>
+      Kabar baik! UMKM <strong>"{{ $umkm->nama_umkm }}"</strong> kamu telah ditinjau ulang
+      dan kini telah diaktifkan kembali oleh tim TobaNiaga.
+    </p>
+    <div class="info-box">
+      Akun kamu sudah aktif dan kamu bisa langsung login untuk mengelola toko dan produkmu.
+    </div>
+    <p>Jika ada pertanyaan, jangan ragu untuk menghubungi tim kami.</p>
+    <a href="{{ route('login') }}" class="cta">Login ke Dashboard</a>
+  </div>
+  <div class="footer">
+    <p>Email ini dikirim otomatis oleh sistem TobaNiaga. Jangan balas email ini.<br>
+    &copy; {{ date('Y') }} TobaNiaga — Pasar UMKM Danau Toba.</p>
+  </div>
+</div>
+</body>
+</html>

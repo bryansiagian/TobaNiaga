@@ -11,9 +11,9 @@ class KategoriUmkmController extends Controller
 {
     public function index()
     {
-        $kategori = KategoriUmkm::withCount('umkm')->orderBy('nama')->get();
+        $kategori = KategoriUmkm::withCount(['umkm' => fn($q) => $q->whereHas('statusVerifikasi', fn($q) => $q->where('kode', 'verified'))])->orderBy('nama')->get();
 
-        return view('admin.kategori-umkm', compact('kategori'));
+        return view('admin.umkm.kategori', compact('kategori'));
     }
 
     public function store(Request $request)

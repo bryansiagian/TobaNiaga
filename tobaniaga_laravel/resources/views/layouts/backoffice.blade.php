@@ -136,45 +136,104 @@
 
                 {{-- ── ADMIN ── --}}
                 @role('admin')
-                    <p class="font-mono text-[10px] uppercase tracking-widest text-ink/30 px-3 pt-5 pb-1.5">Manajemen</p>
-
-                    <a href="{{ route('admin.users.index') }}" class="sidebar-link {{ request()->routeIs('admin.users.*') ? 'active' : '' }}">
-                        <svg class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="1.8">
-                            <path stroke-linecap="round" stroke-linejoin="round" d="M17 20h5v-2a3 3 0 00-5.356-1.857M17 20H7m10 0v-2c0-.656-.126-1.283-.356-1.857M7 20H2v-2a3 3 0 015.356-1.857M7 20v-2c0-.656.126-1.283.356-1.857m0 0a5.002 5.002 0 019.288 0M15 7a3 3 0 11-6 0 3 3 0 016 0z"/>
+                {{-- ── Grup Pengguna ── --}}
+                <div x-data="{ open: {{ request()->routeIs('admin.users.*') ? 'true' : 'false' }} }">
+                    <button @click="open = !open"
+                            class="sidebar-link w-full justify-between"
+                            :class="open ? 'text-lake-900' : ''">
+                        <span class="flex items-center gap-3">
+                            <svg class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="1.8">
+                                <path stroke-linecap="round" stroke-linejoin="round" d="M17 20h5v-2a3 3 0 00-5.356-1.857M17 20H7m10 0v-2c0-.656-.126-1.283-.356-1.857M7 20H2v-2a3 3 0 015.356-1.857M7 20v-2c0-.656.126-1.283.356-1.857m0 0a5.002 5.002 0 019.288 0M15 7a3 3 0 11-6 0 3 3 0 016 0z"/>
+                            </svg>
+                            Pengguna
+                        </span>
+                        <svg class="w-3.5 h-3.5 opacity-40 transition-transform duration-200"
+                            :class="open ? 'rotate-180' : ''"
+                            fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.5">
+                            <path stroke-linecap="round" stroke-linejoin="round" d="M19 9l-7 7-7-7"/>
                         </svg>
-                        Kelola Pengguna
-                    </a>
+                    </button>
 
-                    <a href="{{ route('admin.kategori-umkm.index') }}" class="sidebar-link {{ request()->routeIs('admin.kategori-umkm.*') ? 'active' : '' }}">
-                        <svg class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="1.8">
-                            <path stroke-linecap="round" stroke-linejoin="round" d="M7 7h.01M7 3h5c.512 0 1.024.195 1.414.586l7 7a2 2 0 010 2.828l-7 7a2 2 0 01-2.828 0l-7-7A1.994 1.994 0 013 11V6a3 3 0 013-3z"/>
+                    <div x-show="open"
+                        x-transition:enter="transition ease-out duration-150"
+                        x-transition:enter-start="opacity-0 -translate-y-1"
+                        x-transition:enter-end="opacity-100 translate-y-0"
+                        x-transition:leave="transition ease-in duration-100"
+                        x-transition:leave-start="opacity-100 translate-y-0"
+                        x-transition:leave-end="opacity-0 -translate-y-1"
+                        class="mt-0.5 ml-3 pl-3 border-l border-lake-900/10 space-y-0.5">
+                        <a href="{{ route('admin.users.index') }}"
+                        class="sidebar-link text-[13px] {{ request()->routeIs('admin.users.index') && !request()->has('status') ? 'active' : '' }}">
+                            Semua Pengguna
+                        </a>
+                    </div>
+                </div>
+                {{-- ── Grup UMKM ── --}}
+                <div x-data="{ open: {{ request()->routeIs('admin.umkm.*') ? 'true' : 'false' }} }">
+                    <button @click="open = !open"
+                            class="sidebar-link w-full justify-between"
+                            :class="open ? 'text-lake-900' : ''">
+                        <span class="flex items-center gap-3">
+                            <svg class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="1.8">
+                                <path stroke-linecap="round" stroke-linejoin="round" d="M13.5 21v-7.5a.75.75 0 01.75-.75h3a.75.75 0 01.75.75V21m-4.5 0H2.36m11.14 0H18m0 0h3.64m-1.39 0V9.349m-16.5 11.65V9.35m0 0a3.001 3.001 0 003.75-.615A2.993 2.993 0 009.75 9.75c.896 0 1.7-.393 2.25-1.016a2.993 2.993 0 002.25 1.016c.896 0 1.7-.393 2.25-1.016a3.001 3.001 0 003.75.614m-16.5 0a3.004 3.004 0 01-.621-4.72L4.318 3.44A1.5 1.5 0 015.378 3h13.243a1.5 1.5 0 011.06.44l1.19 1.189a3 3 0 01-.621 4.72m-13.5 8.65h3.75a.75.75 0 00.75-.75V13.5a.75.75 0 00-.75-.75H6.75a.75.75 0 00-.75.75v3.75c0 .415.336.75.75.75z"/>
+                            </svg>
+                            UMKM
+                        </span>
+                        <svg class="w-3.5 h-3.5 opacity-40 transition-transform duration-200"
+                            :class="open ? 'rotate-180' : ''"
+                            fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.5">
+                            <path stroke-linecap="round" stroke-linejoin="round" d="M19 9l-7 7-7-7"/>
                         </svg>
-                        Kategori UMKM
-                    </a>
+                    </button>
 
-                    <a href="{{ route('admin.umkm.pending') }}" class="sidebar-link {{ request()->routeIs('admin.umkm.*') ? 'active' : '' }}">
-                        <svg class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="1.8">
-                            <path stroke-linecap="round" stroke-linejoin="round" d="M19 21V5a2 2 0 00-2-2H7a2 2 0 00-2 2v16m14 0h2M5 21H3"/>
-                        </svg>
-                        Verifikasi UMKM
-                    </a>
+                    <div x-show="open"
+                        x-transition:enter="transition ease-out duration-150"
+                        x-transition:enter-start="opacity-0 -translate-y-1"
+                        x-transition:enter-end="opacity-100 translate-y-0"
+                        x-transition:leave="transition ease-in duration-100"
+                        x-transition:leave-start="opacity-100 translate-y-0"
+                        x-transition:leave-end="opacity-0 -translate-y-1"
+                        class="mt-0.5 ml-3 pl-3 border-l border-lake-900/10 space-y-0.5">
+                        <a href="{{ route('admin.umkm.index') }}"
+                        class="sidebar-link text-[13px] {{ request()->routeIs('admin.umkm.index') ? 'active' : '' }}">
+                            Terdaftar
+                        </a>
+                        <a href="{{ route('admin.umkm.pending') }}"
+                        class="sidebar-link text-[13px] {{ request()->routeIs('admin.umkm.pending') ? 'active' : '' }}">
+                            Menunggu Verifikasi
+                        </a>
+                        <a href="{{ route('admin.umkm.rejected') }}"
+                        class="sidebar-link text-[13px] {{ request()->routeIs('admin.umkm.rejected') ? 'active' : '' }}">
+                            Ditolak
+                        </a>
+                    </div>
+                </div>
 
-                    <a href="#" class="sidebar-link {{ request()->routeIs('admin.pesanan.*') ? 'active' : '' }}">
-                        <svg class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="1.8">
-                            <path stroke-linecap="round" stroke-linejoin="round" d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2"/>
-                        </svg>
-                        Semua Pesanan
-                    </a>
+                {{-- ── Standalone ── --}}
+                <a href="{{ route('admin.kategori-umkm.index') }}"
+                class="sidebar-link {{ request()->routeIs('admin.kategori-umkm.*') ? 'active' : '' }}">
+                    <svg class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="1.8">
+                        <path stroke-linecap="round" stroke-linejoin="round" d="M7 7h.01M7 3h5c.512 0 1.024.195 1.414.586l7 7a2 2 0 010 2.828l-7 7a2 2 0 01-2.828 0l-7-7A1.994 1.994 0 013 11V6a3 3 0 013-3z"/>
+                    </svg>
+                    Kategori UMKM
+                </a>
 
-                    <p class="font-mono text-[10px] uppercase tracking-widest text-ink/30 px-3 pt-5 pb-1.5">Sistem</p>
+                <a href="#" class="sidebar-link {{ request()->routeIs('admin.pesanan.*') ? 'active' : '' }}">
+                    <svg class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="1.8">
+                        <path stroke-linecap="round" stroke-linejoin="round" d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2"/>
+                    </svg>
+                    Semua Pesanan
+                </a>
 
-                    <a href="#" class="sidebar-link">
-                        <svg class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="1.8">
-                            <path stroke-linecap="round" stroke-linejoin="round" d="M10.325 4.317c.426-1.756 2.924-1.756 3.35 0a1.724 1.724 0 002.573 1.066c1.543-.94 3.31.826 2.37 2.37a1.724 1.724 0 001.065 2.572c1.756.426 1.756 2.924 0 3.35a1.724 1.724 0 00-1.066 2.573c.94 1.543-.826 3.31-2.37 2.37a1.724 1.724 0 00-2.572 1.065c-.426 1.756-2.924 1.756-3.35 0a1.724 1.724 0 00-2.573-1.066c-1.543.94-3.31-.826-2.37-2.37a1.724 1.724 0 00-1.065-2.572c-1.756-.426-1.756-2.924 0-3.35a1.724 1.724 0 001.066-2.573c-.94-1.543.826-3.31 2.37-2.37.996.608 2.296.07 2.572-1.065z"/><circle cx="12" cy="12" r="3"/>
-                        </svg>
-                        Pengaturan
-                    </a>
-                @endrole
+                <p class="font-mono text-[10px] uppercase tracking-widest text-ink/30 px-3 pt-5 pb-1.5">Sistem</p>
+
+                <a href="#" class="sidebar-link">
+                    <svg class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="1.8">
+                        <path stroke-linecap="round" stroke-linejoin="round" d="M10.325 4.317c.426-1.756 2.924-1.756 3.35 0a1.724 1.724 0 002.573 1.066c1.543-.94 3.31.826 2.37 2.37a1.724 1.724 0 001.065 2.572c1.756.426 1.756 2.924 0 3.35a1.724 1.724 0 00-1.066 2.573c.94 1.543-.826 3.31-2.37 2.37a1.724 1.724 0 00-2.572 1.065c-.426 1.756-2.924 1.756-3.35 0a1.724 1.724 0 00-2.573-1.066c-1.543.94-3.31-.826-2.37-2.37a1.724 1.724 0 00-1.065-2.572c-1.756-.426-1.756-2.924 0-3.35a1.724 1.724 0 001.066-2.573c-.94-1.543.826-3.31 2.37-2.37.996.608 2.296.07 2.572-1.065z"/><circle cx="12" cy="12" r="3"/>
+                    </svg>
+                    Pengaturan
+                </a>
+            @endrole
 
                 {{-- ── SALES ── --}}
                 @role('sales')

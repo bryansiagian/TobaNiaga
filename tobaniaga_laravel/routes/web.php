@@ -3,6 +3,7 @@
 use App\Http\Controllers\Auth\AuthController;
 use App\Http\Controllers\Admin\AdminController;
 use App\Http\Controllers\Admin\KategoriUmkmController;
+use App\Http\Controllers\Admin\UserController;
 use Illuminate\Support\Facades\Route;
 
 /*
@@ -64,13 +65,19 @@ Route::middleware('auth')->group(function () {
         Route::delete('/kategori-umkm/{kategori_umkm}', [KategoriUmkmController::class, 'destroy'])->name('kategori-umkm.destroy');
 
         // Kelola UMKM
+        Route::get('/umkm', [AdminController::class, 'umkmIndex'])->name('umkm.index');
         Route::get('/umkm/pending',       [AdminController::class, 'umkmPending'])->name('umkm.pending');
         Route::get('/umkm/{umkm}',        [AdminController::class, 'umkmDetail'])->name('umkm.detail');
         Route::post('/umkm/{umkm}/approve', [AdminController::class, 'umkmApprove'])->name('umkm.approve');
         Route::post('/umkm/{umkm}/reject',  [AdminController::class, 'umkmReject'])->name('umkm.reject');
+        Route::get('/umkm-rejected', [AdminController::class, 'umkmRejected'])->name('umkm.rejected');
+        Route::post('/umkm-rejected/{umkm}/reactivate', [AdminController::class, 'umkmReactivate'])->name('umkm.reactivate');
 
         // Kelola User
         Route::get('/users',              [AdminController::class, 'users'])->name('users.index');
+        Route::post('/users/{user}/suspend', [AdminController::class, 'suspendUser'])->name('users.suspend');
+        Route::post('/users/{user}/aktivasi', [AdminController::class, 'aktivasiUser'])->name('users.aktivasi');
         Route::post('/users/{user}/toggle-status', [AdminController::class, 'toggleUserStatus'])->name('users.toggle-status');
+        Route::delete('/users/{user}', [AdminController::class, 'destroyUser'])->name('users.destroy');
     });
 });
