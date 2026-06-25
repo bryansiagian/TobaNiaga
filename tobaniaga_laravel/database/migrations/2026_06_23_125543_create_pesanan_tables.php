@@ -25,7 +25,12 @@ return new class extends Migration
             $table->foreignId('metode_pengiriman_id')
                   ->constrained('metode_pengiriman')
                   ->restrictOnDelete();
+            $table->foreignId('promo_id')
+                  ->nullable()
+                  ->constrained('promo')
+                  ->nullOnDelete();
             $table->float('ongkos_kirim')->default(0);
+            $table->float('diskon')->default(0);
             $table->float('total_harga');
             $table->foreignId('status_id')
                   ->constrained('status_pesanan')

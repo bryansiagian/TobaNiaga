@@ -8,22 +8,24 @@ class Pembayaran extends Model
 {
     protected $table = 'pembayaran';
 
+    const UPDATED_AT = null;
+
     protected $fillable = [
         'pesanan_id',
+        'midtrans_order_id',
+        'midtrans_trans_id',
         'snap_token',
         'metode',
         'jumlah',
-        'status',
-        'midtrans_order_id',
-        'midtrans_transaction_id',
-        'payload',
-        'dibayar_at',
+        'status_id',
+        'raw_response',
+        'paid_at',
     ];
 
     protected $casts = [
-        'jumlah'     => 'float',
-        'payload'    => 'array',
-        'dibayar_at' => 'datetime',
+        'jumlah'       => 'float',
+        'raw_response' => 'array',
+        'paid_at'      => 'datetime',
     ];
 
     // ── Relationships ──────────────────────────────────────────
@@ -31,5 +33,10 @@ class Pembayaran extends Model
     public function pesanan()
     {
         return $this->belongsTo(Pesanan::class, 'pesanan_id');
+    }
+
+    public function status()
+    {
+        return $this->belongsTo(StatusPembayaran::class, 'status_id');
     }
 }

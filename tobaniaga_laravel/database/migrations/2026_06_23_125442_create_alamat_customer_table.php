@@ -10,18 +10,20 @@ return new class extends Migration
     {
         Schema::create('alamat_customer', function (Blueprint $table) {
             $table->id();
-            $table->foreignId('customer_id')
+            $table->foreignId('user_id')
                   ->constrained('users')
                   ->cascadeOnDelete();
             $table->string('label')->comment('Rumah, Kantor, dll');
-            $table->text('alamat_lengkap');
+            $table->string('nama_penerima');
+            $table->string('no_hp_penerima');
+            $table->string('provinsi');
+            $table->string('kota');
             $table->string('kecamatan');
-            $table->string('desa');
+            $table->string('kelurahan');
             $table->string('kode_pos')->nullable();
-            $table->decimal('latitude', 10, 7)->nullable();
-            $table->decimal('longitude', 10, 7)->nullable();
-            $table->boolean('is_default')->default(false);
-            $table->timestamp('created_at')->useCurrent();
+            $table->text('alamat_lengkap');
+            $table->boolean('is_utama')->default(false);
+            $table->timestamps();
         });
     }
 

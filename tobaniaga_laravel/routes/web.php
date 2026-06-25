@@ -4,6 +4,10 @@ use App\Http\Controllers\Auth\AuthController;
 use App\Http\Controllers\Admin\AdminController;
 use App\Http\Controllers\Admin\KategoriUmkmController;
 use App\Http\Controllers\Admin\UserController;
+use App\Http\Controllers\Customer\CustomerKeranjangController;
+use App\Http\Controllers\Customer\CustomerCheckoutController;
+use App\Http\Controllers\Customer\CustomerPaymentController;
+use App\Http\Controllers\Customer\CustomerPesananController;
 use Illuminate\Support\Facades\Route;
 
 /*
@@ -110,4 +114,33 @@ Route::middleware('auth')->group(function () {
 
 
     });
+
+    Route::middleware(['auth', 'role:customer'])->prefix('customer')->name('customer.')->group(function () {
+
+        // Keranjang
+        Route::get('/keranjang',              [CustomerKeranjangController::class, 'index'])->name('keranjang.index');
+        Route::post('/keranjang',             [CustomerKeranjangController::class, 'store'])->name('keranjang.store');
+        Route::put('/keranjang/{keranjang}',  [CustomerKeranjangController::class, 'update'])->name('keranjang.update');
+        Route::delete('/keranjang/{keranjang}',[CustomerKeranjangController::class, 'destroy'])->name('keranjang.destroy');
+
+        // Checkout
+        Route::post('/checkout',       [CustomerCheckoutController::class, 'create'])->name('checkout.create');
+        Route::post('/checkout/store', [CustomerCheckoutController::class, 'store'])->name('checkout.store');
+        Route::get('/checkout', fn() => redirect()->route('customer.keranjang.index'))->name('checkout.index');
+
+        // Payment
+        Route::get('/payment/{pesanan}',         [CustomerPaymentController::class, 'show'])->name('payment.show');
+        Route::post('/payment/{pesanan}/charge', [CustomerPaymentController::class, 'charge'])->name('payment.charge');
+        Route::get('/payment/{pesanan}/status', [CustomerPaymentController::class, 'status'])->name('payment.status');
+
+        // Riwayat
+        Route::get('/pesanan/riwayat', [CustomerPesananController::class, 'riwayat'])->name('pesanan.riwayat');
+        Route::get('/pesanan/{pesanan}', [CustomerPesananController::class, 'show'])->name('pesanan.show');
+
+    });
 });
+
+// Webhook — di luar grup auth
+Route::post('/midtrans/callback', [CustomerPaymentController::class, 'callback'])
+    ->name('midtrans.callback')
+    ->withoutMiddleware([\App\Http\Middleware\VerifyCsrfToken::class]);

@@ -10,21 +10,22 @@ return new class extends Migration
     {
         Schema::create('keranjang', function (Blueprint $table) {
             $table->id();
-            $table->foreignId('customer_id')
+            $table->foreignId('user_id')
                   ->constrained('users')
                   ->cascadeOnDelete();
             $table->foreignId('produk_id')
                   ->constrained('produk')
                   ->cascadeOnDelete();
             $table->unsignedInteger('jumlah')->default(1);
-            $table->timestamp('created_at')->useCurrent();
+            $table->text('catatan')->nullable();
+            $table->timestamps();
 
-            $table->unique(['customer_id', 'produk_id']);
+            $table->unique(['user_id', 'produk_id']);
         });
 
         Schema::create('wishlist', function (Blueprint $table) {
             $table->id();
-            $table->foreignId('customer_id')
+            $table->foreignId('user_id')
                   ->constrained('users')
                   ->cascadeOnDelete();
             $table->foreignId('produk_id')
@@ -32,7 +33,7 @@ return new class extends Migration
                   ->cascadeOnDelete();
             $table->timestamp('created_at')->useCurrent();
 
-            $table->unique(['customer_id', 'produk_id']);
+            $table->unique(['user_id', 'produk_id']);
         });
     }
 
