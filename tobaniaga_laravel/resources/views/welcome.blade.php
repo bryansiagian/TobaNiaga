@@ -90,9 +90,10 @@
                             {{-- Foto --}}
                             <div class="aspect-square bg-lake-50 overflow-hidden">
                                 @if ($produk->fotoProduk->first())
-                                    <img src="{{ Storage::url($produk->fotoProduk->first()->url_foto) }}"
-                                         alt="{{ $produk->nama_produk }}"
-                                         class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300">
+                                    @php $foto = $produk->fotoProduk->first(); @endphp
+                                    <img src="{{ Str::startsWith($foto->url_foto, ['http://', 'https://']) ? $foto->url_foto : Storage::url($foto->url_foto) }}"
+                                        alt="{{ $produk->nama_produk }}"
+                                        class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300">
                                 @else
                                     <div class="w-full h-full flex items-center justify-center">
                                         <svg class="w-8 h-8 text-lake-900/15" fill="none" viewBox="0 0 24 24" stroke="currentColor">

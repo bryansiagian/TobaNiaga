@@ -75,8 +75,9 @@
                         <tr>
                             <td class="px-6 py-3">
                                 @if ($item->fotoProduk->first())
-                                    <img src="{{ Storage::url($item->fotoProduk->first()->url_foto) }}"
-                                         class="w-10 h-10 rounded-lg object-cover border border-lake-900/10">
+                                    @php $foto = $item->fotoProduk->first()->url_foto; @endphp
+                                    <img src="{{ Str::startsWith($foto, ['http://', 'https://']) ? $foto : Storage::url($foto) }}"
+                                        class="w-10 h-10 rounded-lg object-cover border border-lake-900/10">
                                 @else
                                     <div class="w-10 h-10 rounded-lg bg-lake-50 border border-lake-900/10 flex items-center justify-center">
                                         <svg class="w-4 h-4 text-lake-900/20" fill="none" viewBox="0 0 24 24" stroke="currentColor">

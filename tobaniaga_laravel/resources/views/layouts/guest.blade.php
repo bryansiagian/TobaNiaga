@@ -93,6 +93,8 @@
         ];
     @endphp
 
+    @unless(View::hasSection('hide_navbar'))
+    {{-- ══ NAVBAR GLOBAL ══ --}}
     <header class="relative z-20 border-b border-lake-900/10 bg-paper">
         <nav class="max-w-7xl mx-auto px-6 lg:px-10 flex items-center justify-between py-5"
              x-data="{ mobileOpen: false }">
@@ -259,6 +261,7 @@
             @endauth
         </div>
     </header>
+    @endunless
     {{-- ══ END NAVBAR ══════════════════════════════════════════════ --}}
 
     {{ $slot ?? '' }}

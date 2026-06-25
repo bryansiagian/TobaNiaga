@@ -1,7 +1,7 @@
 @extends('layouts.guest')
 
 @section('title', 'Masuk — TobaNiaga')
-
+@section('hide_navbar', true)
 @section('content')
 <div class="min-h-screen flex">
 
