@@ -72,6 +72,14 @@
                 </thead>
                 <tbody class="divide-y divide-lake-900/6">
                     @foreach ($produk as $item)
+                        @php
+                            $fotoData = $item->fotoProduk->map(fn($f) => [
+                                'id'  => $f->id,
+                                'url' => Str::startsWith($f->url_foto, ['http://', 'https://'])
+                                            ? $f->url_foto
+                                            : Storage::url($f->url_foto),
+                            ])->values()->toArray();
+                        @endphp
                         <tr>
                             <td class="px-6 py-3">
                                 @if ($item->fotoProduk->first())
@@ -111,7 +119,7 @@
                                     stok: {{ $item->stok }},
                                     satuan: '{{ $item->satuan }}',
                                     foto_count: {{ $item->fotoProduk->count() }},
-                                    foto: @json($item->fotoProduk->map(fn($f) => ['id' => $f->id, 'url' => Storage::url($f->url_foto)]))
+                                    foto: {{ Js::from($fotoData) }}
                                 })"
                                 class="font-mono text-xs text-lake-800 hover:underline mr-3">Edit</button>
 
@@ -211,7 +219,7 @@
             <h4 class="font-display text-base font-medium text-lake-900 mb-4">Edit Produk</h4>
             <form :action="`/sales/produk/${editData.id}`" method="POST" enctype="multipart/form-data" class="space-y-4">
                 @csrf
-                @method('PUT')
+                <input type="hidden" name="_method" value="PUT">
 
                 <div>
                     <label class="block font-mono text-[10px] uppercase tracking-widest text-ink/40 mb-1.5">Nama Produk</label>
@@ -289,7 +297,7 @@
                                 <img :src="foto.url" class="w-16 h-16 rounded-lg object-cover border border-lake-900/10">
                                 <form :action="`/sales/produk/foto/${foto.id}`" method="POST" class="inline">
                                     @csrf
-                                    @method('DELETE')
+                                    <input type="hidden" name="_method" value="DELETE">
                                     <button type="submit"
                                             class="absolute -top-1.5 -right-1.5 w-5 h-5 bg-ulos-maroon text-paper rounded-full text-xs flex items-center justify-center hover:bg-ulos-maroon/80">×</button>
                                 </form>

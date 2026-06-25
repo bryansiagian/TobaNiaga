@@ -8,6 +8,8 @@ use App\Http\Controllers\Customer\CustomerKeranjangController;
 use App\Http\Controllers\Customer\CustomerCheckoutController;
 use App\Http\Controllers\Customer\CustomerPaymentController;
 use App\Http\Controllers\Customer\CustomerPesananController;
+use App\Http\Controllers\Sales\SalesDashboardController;
+use App\Http\Controllers\Sales\SalesPendapatanController;
 use Illuminate\Support\Facades\Route;
 
 /*
@@ -56,10 +58,9 @@ Route::middleware('auth')->group(function () {
         return redirect()->route('welcome');
     })->name('customer.dashboard')->middleware('role:customer');
 
-    // Dashboard Sales
-    Route::get('/sales/dashboard', function () {
-        return view('sales.dashboard');
-    })->name('sales.dashboard')->middleware('role:sales');
+    Route::get('/sales/dashboard', [SalesDashboardController::class, 'index'])
+        ->name('sales.dashboard')
+        ->middleware('role:sales');
 
     // Dashboard Courier
     Route::get('/courier/dashboard', function () {
@@ -100,6 +101,9 @@ Route::middleware('auth')->group(function () {
     });
 
     Route::middleware(['auth', 'role:sales'])->prefix('sales')->name('sales.')->group(function () {
+
+        // Pendapatan
+        Route::get('/pendapatan', [SalesPendapatanController::class, 'index'])->name('pendapatan.index')->middleware('role:sales');
 
         // Produk
         Route::get('/produk', [App\Http\Controllers\Sales\SalesProdukController::class, 'index'])->name('produk.index');

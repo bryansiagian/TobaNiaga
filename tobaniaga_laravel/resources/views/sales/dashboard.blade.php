@@ -129,18 +129,31 @@
                     <h3 class="font-display text-base font-medium text-lake-900">Aksi Cepat</h3>
                 </div>
                 <div class="p-4 space-y-2">
-                    <a href="{{ route('sales.produk.index')}}" class="flex items-center gap-3 p-3 rounded-lg hover:bg-lake-50 transition-colors">
+                    <a href="{{ route('sales.produk.index') }}" class="flex items-center gap-3 p-3 rounded-lg hover:bg-lake-50 transition-colors">
                         <span class="w-8 h-8 rounded-lg bg-lake-800 flex items-center justify-center flex-shrink-0">
                             <svg class="w-3.5 h-3.5 text-paper" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
                                 <path stroke-linecap="round" stroke-linejoin="round" d="M12 4v16m8-8H4"/>
                             </svg>
                         </span>
                         <div>
-                            <p class="text-sm font-medium text-lake-900">Tambah Produk</p>
-                            <p class="text-xs text-ink/40">Tambahkan produk baru ke tokomu</p>
+                            <p class="text-sm font-medium text-lake-900">Kelola Produk</p>
+                            <p class="text-xs text-ink/40">Tambah & atur produk tokomu</p>
                         </div>
                     </a>
-                    <a href="{{ route('sales.profil.index')}}" class="flex items-center gap-3 p-3 rounded-lg hover:bg-lake-50 transition-colors">
+
+                    <a href="{{ route('sales.pendapatan.index') }}" class="flex items-center gap-3 p-3 rounded-lg hover:bg-lake-50 transition-colors">
+                        <span class="w-8 h-8 rounded-lg bg-lake-50 border border-lake-900/10 flex items-center justify-center flex-shrink-0">
+                            <svg class="w-3.5 h-3.5 text-lake-800" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="1.8">
+                                <path stroke-linecap="round" stroke-linejoin="round" d="M9 19v-6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2a2 2 0 002-2zm0 0V9a2 2 0 012-2h2a2 2 0 012 2v10m-6 0a2 2 0 002 2h2a2 2 0 002-2m0 0V5a2 2 0 012-2h2a2 2 0 012 2v14a2 2 0 01-2 2h-2a2 2 0 01-2-2z"/>
+                            </svg>
+                        </span>
+                        <div>
+                            <p class="text-sm font-medium text-lake-900">Analisis Pendapatan</p>
+                            <p class="text-xs text-ink/40">Lihat tren penjualan & keuangan</p>
+                        </div>
+                    </a>
+
+                    <a href="{{ route('sales.profil.index') }}" class="flex items-center gap-3 p-3 rounded-lg hover:bg-lake-50 transition-colors">
                         <span class="w-8 h-8 rounded-lg bg-lake-50 border border-lake-900/10 flex items-center justify-center flex-shrink-0">
                             <svg class="w-3.5 h-3.5 text-lake-800" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="1.8">
                                 <path stroke-linecap="round" stroke-linejoin="round" d="M19 21V5a2 2 0 00-2-2H7a2 2 0 00-2 2v16m14 0h2M5 21H3"/>
