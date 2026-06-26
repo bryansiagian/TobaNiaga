@@ -5,7 +5,7 @@
 @push('scripts')
     <script defer src="https://cdn.jsdelivr.net/npm/alpinejs@3.x.x/dist/cdn.min.js"></script>
 @endpush
-
+@section('hide_navbar', true)
 @section('content')
 
 <header class="relative z-20 border-b border-lake-900/10">
@@ -25,6 +25,7 @@
          x-data="{
             metode: '',
             alamat: '',
+            modalAlamat: false,
             init() {
                 this.metode = '{{ $metodePengiriman->first()?->id }}';
             }
@@ -107,7 +108,9 @@
                                 </div>
                             @endif
 
-                            <a href="#" class="text-sm text-lake-800 hover:underline font-medium">+ Tambah alamat baru</a>
+                            <button type="button" @click="modalAlamat = true" class="text-sm text-lake-800 hover:underline font-medium">
+                                + Tambah alamat baru
+                            </button>
                         </div>
                     @endif
 
@@ -176,7 +179,135 @@
 
             </div>
         </form>
-    </div>
+
+        {{-- Modal Tambah Alamat --}}
+        <div x-show="modalAlamat" x-cloak
+            class="fixed inset-0 z-50 flex items-center justify-center bg-black/40 p-4"
+            @click.self="modalAlamat = false"
+            x-data="{
+                kecamatanList: [],
+                desaList: [],
+                kecamatanDipilih: '',
+                loadingKec: false,
+                loadingDesa: false,
+                async loadKecamatan() {
+                    this.loadingKec = true;
+                    try {
+                        const res = await fetch('https://www.emsifa.com/api-wilayah-indonesia/api/districts/1206.json');
+                        this.kecamatanList = await res.json();
+                    } catch(e) { console.error(e); }
+                    this.loadingKec = false;
+                },
+                async loadDesa() {
+                    this.desaList = [];
+                    const kec = this.kecamatanList.find(k => k.name === this.kecamatanDipilih);
+                    if (!kec) return;
+                    this.loadingDesa = true;
+                    try {
+                        const res = await fetch('https://www.emsifa.com/api-wilayah-indonesia/api/villages/' + kec.id + '.json');
+                        this.desaList = await res.json();
+                    } catch(e) { console.error(e); }
+                    this.loadingDesa = false;
+                },
+                init() { this.loadKecamatan(); }
+            }">
+            <div class="bg-paper rounded-xl max-w-md w-full p-6 max-h-[90vh] overflow-y-auto">
+                <h3 class="font-display text-lg font-medium text-lake-900 mb-4">Tambah Alamat Baru</h3>
+
+                <form action="{{ route('customer.alamat.store') }}" method="POST" class="space-y-3">
+                    @csrf
+
+                    {{-- Label --}}
+                    <div>
+                        <label class="text-xs text-ink/60 mb-1 block">Label Alamat</label>
+                        <input type="text" name="label" placeholder="Rumah, Kantor, dll" required
+                            class="w-full text-sm border border-lake-900/15 rounded-lg px-3 py-2 focus:outline-none focus:ring-1 focus:ring-lake-800">
+                    </div>
+
+                    {{-- Nama Penerima --}}
+                    <div>
+                        <label class="text-xs text-ink/60 mb-1 block">Nama Penerima</label>
+                        <input type="text" name="nama_penerima" required
+                            class="w-full text-sm border border-lake-900/15 rounded-lg px-3 py-2 focus:outline-none focus:ring-1 focus:ring-lake-800">
+                    </div>
+
+                    {{-- No HP --}}
+                    <div>
+                        <label class="text-xs text-ink/60 mb-1 block">No. HP Penerima</label>
+                        <input type="text" name="no_hp_penerima" required
+                            class="w-full text-sm border border-lake-900/15 rounded-lg px-3 py-2 focus:outline-none focus:ring-1 focus:ring-lake-800">
+                    </div>
+
+                    {{-- Provinsi (fixed) --}}
+                    <div>
+                        <label class="text-xs text-ink/60 mb-1 block">Provinsi</label>
+                        <input type="text" name="provinsi" value="Sumatera Utara" readonly
+                            class="w-full text-sm border border-lake-900/15 rounded-lg px-3 py-2 bg-lake-50 text-ink/50 cursor-not-allowed">
+                    </div>
+
+                    {{-- Kota (fixed) --}}
+                    <div>
+                        <label class="text-xs text-ink/60 mb-1 block">Kota/Kabupaten</label>
+                        <input type="text" name="kota" value="Kabupaten Toba" readonly
+                            class="w-full text-sm border border-lake-900/15 rounded-lg px-3 py-2 bg-lake-50 text-ink/50 cursor-not-allowed">
+                    </div>
+
+                    {{-- Kecamatan (dropdown emsifa) --}}
+                    <div>
+                        <label class="text-xs text-ink/60 mb-1 block">Kecamatan</label>
+                        <select name="kecamatan" x-model="kecamatanDipilih" @change="loadDesa()" required
+                                class="w-full text-sm border border-lake-900/15 rounded-lg px-3 py-2 focus:outline-none focus:ring-1 focus:ring-lake-800 bg-paper"
+                                :disabled="loadingKec">
+                            <option value="" x-text="loadingKec ? 'Memuat...' : 'Pilih kecamatan...'"></option>
+                            <template x-for="kec in kecamatanList" :key="kec.id">
+                                <option :value="kec.name" x-text="kec.name"></option>
+                            </template>
+                        </select>
+                    </div>
+
+                    {{-- Desa (cascade dari kecamatan) --}}
+                    <div>
+                        <label class="text-xs text-ink/60 mb-1 block">Desa / Kelurahan</label>
+                        <select name="kelurahan" required
+                                :disabled="desaList.length === 0 || loadingDesa"
+                                class="w-full text-sm border border-lake-900/15 rounded-lg px-3 py-2 focus:outline-none focus:ring-1 focus:ring-lake-800 bg-paper disabled:opacity-50">
+                            <option value="" x-text="loadingDesa ? 'Memuat...' : (kecamatanDipilih ? 'Pilih desa...' : 'Pilih kecamatan dulu')"></option>
+                            <template x-for="desa in desaList" :key="desa.id">
+                                <option :value="desa.name" x-text="desa.name"></option>
+                            </template>
+                        </select>
+                    </div>
+
+                    {{-- Kode Pos --}}
+                    <div>
+                        <label class="text-xs text-ink/60 mb-1 block">Kode Pos <span class="text-ink/30">(opsional)</span></label>
+                        <input type="text" name="kode_pos" placeholder="Contoh: 22384"
+                            class="w-full text-sm border border-lake-900/15 rounded-lg px-3 py-2 focus:outline-none focus:ring-1 focus:ring-lake-800">
+                    </div>
+
+                    {{-- Alamat Lengkap --}}
+                    <div>
+                        <label class="text-xs text-ink/60 mb-1 block">Alamat Lengkap</label>
+                        <textarea name="alamat_lengkap" rows="2" required
+                                placeholder="Nama jalan, no. rumah, RT/RW..."
+                                class="w-full text-sm border border-lake-900/15 rounded-lg px-3 py-2 focus:outline-none focus:ring-1 focus:ring-lake-800 resize-none"></textarea>
+                    </div>
+
+                    <div class="flex gap-2 pt-2">
+                        <button type="button" @click="modalAlamat = false"
+                                class="flex-1 px-4 py-2.5 border border-lake-900/15 text-ink/60 text-sm rounded-lg hover:bg-lake-50">
+                            Batal
+                        </button>
+                        <button type="submit"
+                                class="flex-1 px-4 py-2.5 bg-lake-900 text-paper text-sm font-medium rounded-lg hover:bg-lake-900/90">
+                            Simpan Alamat
+                        </button>
+                    </div>
+                </form>
+            </div>
+        </div>
+
+    </div>{{-- penutup x-data --}}
 </section>
 
 @endsection

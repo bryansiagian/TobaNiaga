@@ -10,26 +10,29 @@ class Pengiriman extends Model
 
     protected $fillable = [
         'pesanan_id',
+        'courier_id',
         'status_id',
-        'no_resi',
-        'kurir',
-        'estimasi_tiba',
-        'dikirim_at',
-        'diterima_at',
-        'catatan',
+        'waktu_pickup',
+        'waktu_selesai',
+        'catatan_kurir',
+        'nama_penerima',
+        'relasi_penerima',
+        'foto_bukti',
     ];
 
     protected $casts = [
-        'estimasi_tiba' => 'date',
-        'dikirim_at'    => 'datetime',
-        'diterima_at'   => 'datetime',
+        'waktu_pickup'  => 'datetime',
+        'waktu_selesai' => 'datetime',
     ];
-
-    // ── Relationships ──────────────────────────────────────────
 
     public function pesanan()
     {
         return $this->belongsTo(Pesanan::class, 'pesanan_id');
+    }
+
+    public function kurir()
+    {
+        return $this->belongsTo(User::class, 'courier_id');
     }
 
     public function status()

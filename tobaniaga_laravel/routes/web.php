@@ -10,6 +10,10 @@ use App\Http\Controllers\Customer\CustomerPaymentController;
 use App\Http\Controllers\Customer\CustomerPesananController;
 use App\Http\Controllers\Sales\SalesDashboardController;
 use App\Http\Controllers\Sales\SalesPendapatanController;
+use App\Http\Controllers\Sales\SalesPesananController;
+use App\Http\Controllers\Sales\SalesLacakController;
+use App\Http\Controllers\Courier\CourierController;
+use App\Http\Controllers\Customer\AlamatCustomerController;
 use Illuminate\Support\Facades\Route;
 
 /*
@@ -62,11 +66,6 @@ Route::middleware('auth')->group(function () {
         ->name('sales.dashboard')
         ->middleware('role:sales');
 
-    // Dashboard Courier
-    Route::get('/courier/dashboard', function () {
-        return view('courier.dashboard');
-    })->name('courier.dashboard')->middleware('role:courier');
-
     // ── Admin Routes ───────────────────────────────────────
     Route::prefix('admin')->name('admin.')->middleware('role:admin')->group(function () {
         Route::get('/dashboard',          [AdminController::class, 'dashboard'])->name('dashboard');
@@ -105,6 +104,11 @@ Route::middleware('auth')->group(function () {
         // Pendapatan
         Route::get('/pendapatan', [SalesPendapatanController::class, 'index'])->name('pendapatan.index')->middleware('role:sales');
 
+        // Pesanan
+        Route::get('/pesanan', [SalesPesananController::class, 'index'])->name('pesanan.index');
+        Route::patch('/pesanan/{pesanan}', [SalesPesananController::class, 'update'])->name('pesanan.update');
+        Route::post('/pesanan/{pesanan}/approve', [SalesPesananController::class, 'approve'])->name('pesanan.approve');
+
         // Produk
         Route::get('/produk', [App\Http\Controllers\Sales\SalesProdukController::class, 'index'])->name('produk.index');
         Route::post('/produk', [App\Http\Controllers\Sales\SalesProdukController::class, 'store'])->name('produk.store');
@@ -115,6 +119,9 @@ Route::middleware('auth')->group(function () {
         // Profil
         Route::get('/profil', [App\Http\Controllers\Sales\SalesProfilController::class, 'index'])->name('profil.index');
         Route::put('/profil', [App\Http\Controllers\Sales\SalesProfilController::class, 'update'])->name('profil.update');
+
+        // Lacak
+        Route::get('/lacak/{pesanan}', [SalesLacakController::class, 'show'])->name('lacak.show');
 
 
     });
@@ -141,6 +148,20 @@ Route::middleware('auth')->group(function () {
         Route::get('/pesanan/riwayat', [CustomerPesananController::class, 'riwayat'])->name('pesanan.riwayat');
         Route::get('/pesanan/{pesanan}', [CustomerPesananController::class, 'show'])->name('pesanan.show');
 
+        // Alamat
+        Route::post('/alamat', [App\Http\Controllers\Customer\AlamatCustomerController::class, 'store'])->name('alamat.store');
+        Route::delete('/alamat/{alamat}', [App\Http\Controllers\Customer\AlamatCustomerController::class, 'destroy'])->name('alamat.destroy');
+
+        // Lacak Pesanan
+        Route::get('/pesanan/{pesanan}/lacak', [CustomerPesananController::class, 'lacak'])->name('pesanan.lacak');
+
+    });
+
+    Route::middleware(['auth', 'role:courier'])->prefix('courier')->name('courier.')->group(function () {
+        Route::get('/dashboard',                              [CourierController::class, 'dashboard'])->name('dashboard');
+        Route::get('/pengiriman',                             [CourierController::class, 'pengirimanIndex'])->name('pengiriman.index');
+        Route::post('/pengiriman/{pengiriman}/claim',         [CourierController::class, 'claim'])->name('pengiriman.claim');
+        Route::patch('/pengiriman/{pengiriman}/status',       [CourierController::class, 'updateStatus'])->name('pengiriman.status');
     });
 });
 

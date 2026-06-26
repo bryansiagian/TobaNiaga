@@ -25,6 +25,9 @@ return new class extends Migration
             $table->timestamp('waktu_pickup')->nullable();
             $table->timestamp('waktu_selesai')->nullable();
             $table->text('catatan_kurir')->nullable();
+            $table->string('nama_penerima')->nullable();
+            $table->string('relasi_penerima')->nullable(); // "Diri sendiri", "Istri", dll
+            $table->string('foto_bukti')->nullable();
             $table->timestamps();
         });
 

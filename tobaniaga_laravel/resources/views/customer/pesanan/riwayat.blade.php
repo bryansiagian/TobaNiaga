@@ -59,10 +59,24 @@
                         <p class="text-xs text-gray-500 mt-0.5">{{ $item->umkm->nama_umkm ?? '-' }}</p>
                     </div>
                     <div class="flex flex-col items-end gap-1.5">
-                        {{-- Status pesanan --}}
                         <span class="inline-block text-xs font-medium px-2.5 py-1 rounded-full border {{ $badgePesanan[0] }}">
                             {{ $badgePesanan[1] }}
                         </span>
+                        @if($item->pengiriman && $item->pengiriman->status)
+                        @php
+                            $pgKode = $item->pengiriman->status->kode;
+                            $pgBadge = match($pgKode) {
+                                'menunggu_kurir' => 'bg-yellow-50 text-yellow-600 border-yellow-200',
+                                'dijemput'       => 'bg-blue-50 text-blue-600 border-blue-200',
+                                'diantar'        => 'bg-purple-50 text-purple-600 border-purple-200',
+                                'selesai'        => 'bg-green-50 text-green-600 border-green-200',
+                                default          => 'bg-gray-50 text-gray-500 border-gray-200',
+                            };
+                        @endphp
+                        <span class="inline-block text-[10px] font-medium px-2.5 py-0.5 rounded-full border {{ $pgBadge }}">
+                            🚚 {{ $item->pengiriman->status->label }}
+                        </span>
+                        @endif
                         {{-- Status pembayaran --}}
                         @if($sudahBayar)
                             <span class="inline-flex items-center gap-1 text-xs text-green-600 font-medium">
@@ -110,12 +124,18 @@
                     <div class="flex gap-2">
                         @if($menungguBayar && !$sudahBayar)
                             <a href="{{ route('customer.payment.show', $item) }}"
-                               class="px-4 py-2 rounded-lg bg-ulos-maroon text-white text-xs font-semibold hover:opacity-90">
+                            class="px-4 py-2 rounded-lg bg-ulos-maroon text-white text-xs font-semibold hover:opacity-90">
                                 Bayar Sekarang
                             </a>
                         @endif
+                        @if(in_array($statusKode, ['dikirim', 'selesai']) && $item->pengiriman)
+                            <a href="{{ route('customer.pesanan.lacak', $item) }}"
+                            class="px-4 py-2 rounded-lg border border-lake-200 text-lake-900 text-xs font-medium hover:bg-white">
+                                Lacak
+                            </a>
+                        @endif
                         <a href="{{ route('customer.pesanan.show', $item) }}"
-                           class="px-4 py-2 rounded-lg border border-lake-200 text-lake-900 text-xs font-medium hover:bg-white">
+                        class="px-4 py-2 rounded-lg border border-lake-200 text-lake-900 text-xs font-medium hover:bg-white">
                             Lihat Detail
                         </a>
                     </div>

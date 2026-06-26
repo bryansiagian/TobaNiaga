@@ -11,7 +11,7 @@ class CustomerPesananController extends Controller
 {
     public function riwayat()
     {
-        $pesanan = Pesanan::with(['status', 'pembayaran', 'detail', 'umkm'])
+        $pesanan = Pesanan::with(['status', 'pembayaran', 'detail', 'umkm', 'pengiriman.status'])
             ->where('customer_id', Auth::id())
             ->latest()
             ->paginate(10);
@@ -34,5 +34,23 @@ class CustomerPesananController extends Controller
         ]);
 
         return view('customer.pesanan.show', compact('pesanan'));
+    }
+
+    public function lacak(Pesanan $pesanan): View
+    {
+        abort_if($pesanan->customer_id !== Auth::id(), 403);
+        abort_unless($pesanan->pengiriman, 404);
+
+        $pesanan->load([
+            'pengiriman.status',
+            'pengiriman.log.status',
+            'pengiriman.kurir',
+            'detail',
+            'status',
+            'umkm',
+            'alamat',
+        ]);
+
+        return view('customer.pesanan.lacak', compact('pesanan'));
     }
 }
