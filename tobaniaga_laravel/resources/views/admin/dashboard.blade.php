@@ -77,7 +77,7 @@
                                 <td class="px-6 py-3.5 text-ink/60">{{ $item->owner->nama ?? '—' }}</td>
                                 <td class="px-6 py-3.5 text-ink/60">{{ $item->kategori->nama ?? '—' }}</td>
                                 <td class="px-6 py-3.5 text-right">
-                                    <a href="{{ route('admin.umkm.detail', $item->id) }}"
+                                    <a href="{{ route('admin.umkm.pending', $item->id) }}"
                                        class="font-mono text-xs text-lake-800 hover:underline">Tinjau</a>
                                 </td>
                             </tr>
