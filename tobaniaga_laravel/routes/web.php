@@ -14,6 +14,8 @@ use App\Http\Controllers\Sales\SalesPesananController;
 use App\Http\Controllers\Sales\SalesLacakController;
 use App\Http\Controllers\Courier\CourierController;
 use App\Http\Controllers\Customer\AlamatCustomerController;
+use App\Http\Controllers\Sales\SalesPromoController;
+use App\Http\Controllers\Admin\AdminPromoController;
 use Illuminate\Support\Facades\Route;
 
 /*
@@ -97,6 +99,13 @@ Route::middleware('auth')->group(function () {
         Route::post('/kategori-produk', [App\Http\Controllers\Admin\AdminKategoriProdukController::class, 'store'])->name('kategori-produk.store');
         Route::put('/kategori-produk/{kategoriProduk}', [App\Http\Controllers\Admin\AdminKategoriProdukController::class, 'update'])->name('kategori-produk.update');
         Route::delete('/kategori-produk/{kategoriProduk}', [App\Http\Controllers\Admin\AdminKategoriProdukController::class, 'destroy'])->name('kategori-produk.destroy');
+
+        // Kelola Promo
+        Route::get('/promo',                    [AdminPromoController::class, 'index'])->name('promo.index');
+        Route::post('/promo',                   [AdminPromoController::class, 'store'])->name('promo.store');
+        Route::put('/promo/{promo}',            [AdminPromoController::class, 'update'])->name('promo.update');
+        Route::delete('/promo/{promo}',         [AdminPromoController::class, 'destroy'])->name('promo.destroy');
+        Route::patch('/promo/{promo}/toggle',   [AdminPromoController::class, 'toggle'])->name('promo.toggle');
     });
 
     Route::middleware(['auth', 'role:sales'])->prefix('sales')->name('sales.')->group(function () {
@@ -123,6 +132,13 @@ Route::middleware('auth')->group(function () {
         // Lacak
         Route::get('/lacak/{pesanan}', [SalesLacakController::class, 'show'])->name('lacak.show');
 
+        // Promo
+        Route::get('/promo',                [SalesPromoController::class, 'index'])->name('promo.index');
+        Route::post('/promo',               [SalesPromoController::class, 'store'])->name('promo.store');
+        Route::put('/promo/{promo}',        [SalesPromoController::class, 'update'])->name('promo.update');
+        Route::delete('/promo/{promo}',     [SalesPromoController::class, 'destroy'])->name('promo.destroy');
+        Route::patch('/promo/{promo}/toggle', [SalesPromoController::class, 'toggle'])->name('promo.toggle');
+
 
     });
 
@@ -139,6 +155,9 @@ Route::middleware('auth')->group(function () {
         Route::post('/checkout/store', [CustomerCheckoutController::class, 'store'])->name('checkout.store');
         Route::get('/checkout', fn() => redirect()->route('customer.keranjang.index'))->name('checkout.index');
 
+        // Resume setelah input alamat pertama kali
+        Route::get('/checkout/resume', [CustomerCheckoutController::class, 'resume'])->name('checkout.resume');
+
         // Payment
         Route::get('/payment/{pesanan}',         [CustomerPaymentController::class, 'show'])->name('payment.show');
         Route::post('/payment/{pesanan}/charge', [CustomerPaymentController::class, 'charge'])->name('payment.charge');
@@ -154,6 +173,9 @@ Route::middleware('auth')->group(function () {
 
         // Lacak Pesanan
         Route::get('/pesanan/{pesanan}/lacak', [CustomerPesananController::class, 'lacak'])->name('pesanan.lacak');
+
+        // Promo
+        Route::post('/checkout/apply-promo', [CustomerCheckoutController::class, 'applyPromo'])->name('checkout.apply-promo');
 
     });
 

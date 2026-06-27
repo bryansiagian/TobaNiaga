@@ -7,7 +7,7 @@
 
     <div class="flex items-center justify-between mb-6">
         <h1 class="font-display text-2xl font-semibold text-ink">Pesanan Saya</h1>
-        <a href="{{ route('welcome') }}"
+        <a href="{{ route('produk.index') }}"
            class="text-sm text-lake-600 hover:text-lake-900 font-medium">
             + Belanja Lagi
         </a>

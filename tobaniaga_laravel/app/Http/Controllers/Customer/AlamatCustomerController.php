@@ -27,7 +27,6 @@ class AlamatCustomerController extends Controller
 
         $validated['user_id'] = Auth::id();
 
-        // Kalau dicentang utama, atau ini alamat pertama, jadikan utama
         $sudahAdaAlamat = AlamatCustomer::where('user_id', Auth::id())->exists();
         $validated['is_utama'] = $request->boolean('is_utama') || !$sudahAdaAlamat;
 
@@ -36,6 +35,12 @@ class AlamatCustomerController extends Controller
         }
 
         AlamatCustomer::create($validated);
+
+        // Redirect ke URL yang diminta kalau ada, fallback ke back()
+        $redirectTo = $request->input('redirect_to');
+        if ($redirectTo && str_starts_with($redirectTo, config('app.url'))) {
+            return redirect($redirectTo)->with('status', 'Alamat berhasil ditambahkan.');
+        }
 
         return back()->with('status', 'Alamat berhasil ditambahkan.');
     }

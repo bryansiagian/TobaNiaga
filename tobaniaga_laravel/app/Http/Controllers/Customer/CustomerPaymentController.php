@@ -86,6 +86,15 @@ class CustomerPaymentController extends Controller
             ];
         }
 
+        if ($pesanan->diskon > 0) {
+            $itemDetails[] = [
+                'id'       => 'diskon',
+                'price'    => (int) -$pesanan->diskon,
+                'quantity' => 1,
+                'name'     => 'Diskon Promo',
+            ];
+        }
+
         $midtrans = new MidtransService();
 
         try {
