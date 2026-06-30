@@ -9,7 +9,7 @@ class OtpCode extends Model
     protected $fillable = [
         'email',
         'kode',
-        'kadaluarsa_at',
+        'kadaluarsa_pada',
         'digunakan',
     ];
 
