@@ -185,6 +185,11 @@ class CustomerPaymentController extends Controller
                 foreach ($pesanan->detail as $detail) {
                     $detail->produk()->decrement('stok', $detail->jumlah);
                 }
+
+                // Hapus keranjang setelah pembayaran benar-benar berhasil
+                \App\Models\Keranjang::where('user_id', $pesanan->customer_id)
+                    ->whereIn('produk_id', $pesanan->detail->pluck('produk_id'))
+                    ->delete();
             }
 
             if (in_array($transStatus, ['expire', 'cancel', 'deny'])) {

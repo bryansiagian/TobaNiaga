@@ -95,7 +95,7 @@ class AuthController extends Controller
     public function register(Request $request): RedirectResponse
     {
         $rules = [
-            'role'     => ['required', 'in:customer,sales'],
+            'role'     => ['required', 'in:customer,sales,courier'],
             'nama'     => ['required', 'string', 'max:150'],
             'email'    => ['required', 'email', 'max:150', 'unique:users,email'],
             'no_hp'    => ['required', 'string', 'max:20'],
@@ -223,6 +223,15 @@ class AuthController extends Controller
             $request->session()->regenerate();
             return redirect()->route('welcome')
                 ->with('status', 'Email berhasil diverifikasi. Selamat datang di TobaNiaga!');
+        }
+
+        if ($user->hasRole('courier')) {
+            // Courier langsung aktif setelah OTP, tapi masih perlu upload dokumen nanti
+            $user->update(['status_id' => $statusAktifId]);
+            Auth::login($user);
+            $request->session()->regenerate();
+            return redirect()->route('courier.dashboard')
+                ->with('status', 'Email berhasil diverifikasi! Lengkapi dokumen identitasmu untuk mulai menerima pesanan.');
         }
 
         // Sales — tetap nonaktif, tunggu admin

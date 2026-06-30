@@ -167,11 +167,23 @@ class AdminController extends Controller
 
     // ── Kelola User ────────────────────────────────────────────
 
-    public function users(): View
+    public function users(Request $request): View
     {
-        $users = User::with(['status', 'roles'])
+        $users = User::with(['status', 'roles', 'statusVerifikasiDokumen', 'umkm.statusVerifikasi'])
+            ->when($request->role, fn($q) => $q->whereHas('roles', fn($q2) => $q2->where('name', $request->role)))
+            ->when($request->status, fn($q) => $q->whereHas('status', fn($q2) => $q2->where('kode', $request->status)))
+            ->when($request->verifikasi, function ($q) use ($request) {
+                $q->whereHas('roles', fn($r) => $r->whereIn('name', ['sales', 'courier'])); // tambah ini
+                if ($request->verifikasi === 'belum') {
+                    $q->whereNull('status_verifikasi_dokumen_id');
+                } else {
+                    $q->whereHas('statusVerifikasiDokumen', fn($q2) => $q2->where('kode', $request->verifikasi));
+                }
+            })
+            ->whereDoesntHave('roles', fn($q) => $q->where('name', 'admin'))
             ->latest()
-            ->paginate(20);
+            ->paginate(20)
+            ->withQueryString();
 
         return view('admin.users.index', compact('users'));
     }

@@ -56,11 +56,11 @@
                                            class="accent-lake-800">
                                     <div>
                                         <p class="text-sm font-medium text-lake-900">{{ $mp->label }}</p>
-                                        @if ($mp->kode === 'kurir')
+                                        {{-- @if ($mp->kode === 'kurir')
                                             <p class="text-xs text-ink/50 mt-0.5">Rp 10.000 (flat sementara)</p>
                                         @else
                                             <p class="text-xs text-ink/50 mt-0.5">Gratis</p>
-                                        @endif
+                                        @endif --}}
                                     </div>
                                 </label>
                             @endforeach
@@ -83,6 +83,7 @@
                                                :class="alamat == '{{ $al->id }}' ? 'border-lake-800 bg-lake-50' : 'border-lake-900/10 hover:bg-lake-50'">
                                             <input type="radio" name="alamat_id" value="{{ $al->id }}"
                                                    x-model="alamat"
+                                                   @change="hitungTotal()"
                                                    class="accent-lake-800 mt-0.5">
                                             <div>
                                                 <p class="text-sm font-medium text-lake-900">
@@ -190,7 +191,9 @@
                             </div>
                             <div class="flex justify-between text-ink/60">
                                 <span>Ongkos Kirim</span>
-                                <span x-text="ongkosKirim > 0 ? 'Rp 10.000' : 'Gratis'"></span>
+                                <span x-show="loadingOngkir">Menghitung...</span>
+                                <span x-show="!loadingOngkir && ongkirTersedia" x-text="ongkosKirim > 0 ? formatRupiah(ongkosKirim) : 'Gratis'"></span>
+                                <span x-show="!loadingOngkir && !ongkirTersedia" class="text-yellow-600 text-xs" x-text="'Gratis (rute belum ditetapkan)'"></span>
                             </div>
                             <div x-show="promoApplied" class="flex justify-between text-green-600 font-medium">
                                 <span x-text="'Promo ' + promoKode"></span>
@@ -344,13 +347,43 @@ function checkoutPage() {
         umkmId:       {{ $umkm->id }},
         csrfToken:    '{{ csrf_token() }}',
 
+        // Ongkir
+        ongkosKirim: 0,
+        ongkirTersedia: true,
+        loadingOngkir: false,
+
         init() {
             this.hitungTotal();
         },
 
-        hitungTotal() {
-            this.ongkosKirim = this.metode == this.kurirId ? 10000 : 0;
-            this.total = Math.max(0, this.subtotal + this.ongkosKirim - this.diskon);
+        async hitungTotal() {
+            if (this.metode != this.kurirId || !this.alamat) {
+                this.ongkosKirim = 0;
+                this.total = Math.max(0, this.subtotal + this.ongkosKirim - this.diskon);
+                return;
+            }
+
+            this.loadingOngkir = true;
+            try {
+                const res = await fetch('{{ route('customer.checkout.hitung-ongkir') }}', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                        'X-CSRF-TOKEN': this.csrfToken,
+                        'Accept': 'application/json',
+                    },
+                    body: JSON.stringify({ umkm_id: this.umkmId, alamat_id: this.alamat }),
+                });
+                const data = await res.json();
+                this.ongkosKirim = data.ongkos;
+                this.ongkirTersedia = data.tersedia;
+            } catch (e) {
+                this.ongkosKirim = 0;
+                this.ongkirTersedia = false;
+            } finally {
+                this.loadingOngkir = false;
+                this.total = Math.max(0, this.subtotal + this.ongkosKirim - this.diskon);
+            }
         },
 
         formatRupiah(nilai) {

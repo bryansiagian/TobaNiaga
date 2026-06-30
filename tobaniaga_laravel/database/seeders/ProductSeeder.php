@@ -18,7 +18,7 @@ class ProductSeeder extends Seeder
 {
     public function run(): void
     {
-        $umkm = Umkm::where('owner_id', 2)->first();
+        $umkm = Umkm::where('owner_id', 3)->first();
 
         if (!$umkm) {
             $this->command->warn('UMKM dengan owner_id=2 tidak ditemukan. Jalankan UserSeeder terlebih dahulu.');

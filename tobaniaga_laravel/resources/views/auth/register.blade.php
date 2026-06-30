@@ -46,22 +46,34 @@
                 {{-- ── Pilihan role ── --}}
                 <div>
                     <span class="block text-sm font-medium text-lake-900 mb-2.5">Daftar sebagai</span>
-                    <div class="grid grid-cols-2 gap-3">
+                    <div class="grid grid-cols-3 gap-3">
                         <label class="relative cursor-pointer">
                             <input type="radio" name="role" value="customer" x-model="role" class="peer sr-only">
-                            <div class="rounded-lg border-2 border-lake-900/15 px-4 py-3.5 text-center transition-colors peer-checked:border-lake-800 peer-checked:bg-lake-50">
+                            <div class="rounded-lg border-2 border-lake-900/15 px-3 py-3.5 text-center transition-colors peer-checked:border-lake-800 peer-checked:bg-lake-50">
                                 <span class="block text-sm font-semibold text-lake-900">Pembeli</span>
                                 <span class="block text-xs text-ink/50 mt-0.5">Belanja produk</span>
                             </div>
                         </label>
                         <label class="relative cursor-pointer">
                             <input type="radio" name="role" value="sales" x-model="role" class="peer sr-only">
-                            <div class="rounded-lg border-2 border-lake-900/15 px-4 py-3.5 text-center transition-colors peer-checked:border-ulos-maroon peer-checked:bg-ulos-maroon/5">
+                            <div class="rounded-lg border-2 border-lake-900/15 px-3 py-3.5 text-center transition-colors peer-checked:border-ulos-maroon peer-checked:bg-ulos-maroon/5">
                                 <span class="block text-sm font-semibold text-lake-900">Pemilik UMKM</span>
                                 <span class="block text-xs text-ink/50 mt-0.5">Jual produk</span>
                             </div>
                         </label>
+                        <label class="relative cursor-pointer">
+                            <input type="radio" name="role" value="courier" x-model="role" class="peer sr-only">
+                            <div class="rounded-lg border-2 border-lake-900/15 px-3 py-3.5 text-center transition-colors peer-checked:border-ulos-gold peer-checked:bg-ulos-gold/5">
+                                <span class="block text-sm font-semibold text-lake-900">Kurir</span>
+                                <span class="block text-xs text-ink/50 mt-0.5">Antar pesanan</span>
+                            </div>
+                        </label>
                     </div>
+
+                    {{-- Tambah info untuk courier, di bawah info sales yang sudah ada --}}
+                    <p x-show="role === 'courier'" x-cloak class="mt-2.5 text-xs text-ulos-gold/80 leading-relaxed">
+                        Akun kurir perlu melengkapi dokumen identitas setelah registrasi.
+                    </p>
                     <p x-show="role === 'sales'" x-cloak class="mt-2.5 text-xs text-ulos-maroon/80 leading-relaxed">
                         Akun UMKM akan diverifikasi admin sebelum bisa digunakan untuk berjualan.
                     </p>

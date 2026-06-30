@@ -225,6 +225,14 @@
                     Kategori Produk
                 </a>
 
+                <a href="{{ route('admin.ongkir.index') }}" class="sidebar-link {{ request()->routeIs('admin.ongkir.*') ? 'active' : '' }}">
+                    <svg class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="1.8">
+                        <path stroke-linecap="round" stroke-linejoin="round" d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z"/>
+                        <path stroke-linecap="round" stroke-linejoin="round" d="M15 11a3 3 0 11-6 0 3 3 0 016 0z"/>
+                    </svg>
+                    Ongkos Kirim
+                </a>
+
                 <a href="{{ route('admin.promo.index') }}" class="sidebar-link {{ request()->routeIs('admin.promo.*') ? 'active' : '' }}">
                     <svg class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="1.8">
                         <path stroke-linecap="round" stroke-linejoin="round" d="M7 7h.01M7 3h5c.512 0 1.024.195 1.414.586l7 7a2 2 0 010 2.828l-7 7a2 2 0 01-2.828 0l-7-7A2 2 0 013 12V7a4 4 0 014-4z"/>
@@ -239,6 +247,31 @@
                     Semua Pesanan
                 </a>
 
+                <a href="{{ route('admin.pencairan.index') }}" class="sidebar-link {{ request()->routeIs('admin.pencairan.*') ? 'active' : '' }}">
+                    <svg class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="1.8">
+                        <path stroke-linecap="round" stroke-linejoin="round" d="M17 9V7a4 4 0 00-8 0v2m-1 8h10a2 2 0 002-2v-6a2 2 0 00-2-2H8a2 2 0 00-2 2v6a2 2 0 002 2z"/>
+                    </svg>
+                    Pencairan Dana
+                </a>
+
+                <a href="{{ route('admin.pencairan-kurir.index') }}" class="sidebar-link {{ request()->routeIs('admin.pencairan-kurir.*') ? 'active' : '' }}">
+                    <svg class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="1.8">
+                        <path stroke-linecap="round" stroke-linejoin="round" d="M17 9V7a4 4 0 00-8 0v2m-1 8h10a2 2 0 002-2v-6a2 2 0 00-2-2H8a2 2 0 00-2 2v6a2 2 0 002 2z"/>
+                    </svg>
+                    Pencairan Dana Kurir
+                </a>
+
+                <a href="{{ route('admin.verifikasi.dokumen.index') }}" class="sidebar-link {{ request()->routeIs('admin.verifikasi.dokumen.*') ? 'active' : '' }}">
+                    <svg class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="1.8">
+                        <path stroke-linecap="round" stroke-linejoin="round" d="M9 12l2 2 4-4m5.618-4.016A11.955 11.955 0 0112 2.944a11.955 11.955 0 01-8.618 3.04A12.02 12.02 0 003 9c0 5.591 3.824 10.29 9 11.622 5.176-1.332 9-6.03 9-11.622 0-1.042-.133-2.052-.382-3.016z"/>
+                    </svg>
+                    Verifikasi Dokumen
+                    @php $pendingDok = \App\Models\User::whereHas('statusVerifikasiDokumen', fn($q) => $q->where('kode', 'pending'))->count(); @endphp
+                    @if($pendingDok > 0)
+                    <span class="ml-auto text-[10px] px-1.5 py-0.5 rounded-full bg-ulos-maroon text-paper">{{ $pendingDok }}</span>
+                    @endif
+                </a>
+
                 <p class="font-mono text-[10px] uppercase tracking-widest text-ink/30 px-3 pt-5 pb-1.5">Sistem</p>
 
                 <a href="#" class="sidebar-link">
@@ -251,39 +284,89 @@
 
                 {{-- ── SALES ── --}}
                 @role('sales')
+                    @php
+                        $umkmVerified = auth()->user()->umkm?->statusVerifikasi?->kode === 'verified';
+                        $dokumenVerified = auth()->user()->statusVerifikasiDokumen?->kode === 'verified';
+                        $salesAktif = $umkmVerified && $dokumenVerified;
+                    @endphp
+
                     <p class="font-mono text-[10px] uppercase tracking-widest text-ink/30 px-3 pt-5 pb-1.5">Toko</p>
 
-                    <a href="{{ route('sales.produk.index') }}" class="sidebar-link {{ request()->routeIs('sales.produk.*') ? 'active' : '' }}">
+                    <a href="{{ route('sales.produk.index') }}"
+                    class="sidebar-link {{ request()->routeIs('sales.produk.*') ? 'active' : '' }} {{ !$salesAktif ? 'opacity-40 pointer-events-none' : '' }}">
                         <svg class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="1.8">
                             <path stroke-linecap="round" stroke-linejoin="round" d="M20 7l-8-4-8 4m16 0l-8 4m8-4v10l-8 4m0-10L4 7m8 4v10M4 7v10l8 4"/>
                         </svg>
                         Produk Saya
+                        @if(!$salesAktif)<span class="ml-auto text-[10px] text-ink/30">🔒</span>@endif
                     </a>
 
-                    <a href="{{ route('sales.pesanan.index')}}" class="sidebar-link {{ request()->routeIs('sales.pesanan.*') ? 'active' : '' }}">
+                    <a href="{{ route('sales.pesanan.index') }}"
+                    class="sidebar-link {{ request()->routeIs('sales.pesanan.*') ? 'active' : '' }} {{ !$salesAktif ? 'opacity-40 pointer-events-none' : '' }}">
                         <svg class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="1.8">
                             <path stroke-linecap="round" stroke-linejoin="round" d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2"/>
                         </svg>
                         Pesanan Masuk
+                        @if(!$salesAktif)<span class="ml-auto text-[10px] text-ink/30">🔒</span>@endif
                     </a>
 
-                    <a href="{{ route('sales.promo.index') }}" class="sidebar-link {{ request()->routeIs('sales.promo.*') ? 'active' : '' }}">
+                    <a href="{{ route('sales.promo.index') }}"
+                    class="sidebar-link {{ request()->routeIs('sales.promo.*') ? 'active' : '' }} {{ !$salesAktif ? 'opacity-40 pointer-events-none' : '' }}">
                         <svg class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="1.8">
                             <path stroke-linecap="round" stroke-linejoin="round" d="M7 7h.01M7 3h5c.512 0 1.024.195 1.414.586l7 7a2 2 0 010 2.828l-7 7a2 2 0 01-2.828 0l-7-7A1.994 1.994 0 013 12V7a4 4 0 014-4z"/>
                         </svg>
                         Promo
+                        @if(!$salesAktif)<span class="ml-auto text-[10px] text-ink/30">🔒</span>@endif
                     </a>
 
-                    <a href="{{ route('sales.pendapatan.index')}}" class="sidebar-link">
+                    <a href="{{ route('sales.pendapatan.index') }}"
+                    class="sidebar-link {{ !$salesAktif ? 'opacity-40 pointer-events-none' : '' }}">
                         <svg class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="1.8">
                             <path stroke-linecap="round" stroke-linejoin="round" d="M3 10h18M7 15h1m4 0h1m-7 4h12a3 3 0 003-3V8a3 3 0 00-3-3H6a3 3 0 00-3 3v8a3 3 0 003 3z"/>
                         </svg>
                         Pendapatan
+                        @if(!$salesAktif)<span class="ml-auto text-[10px] text-ink/30">🔒</span>@endif
+                    </a>
+
+                    <a href="{{ route('sales.rekening.index') }}"
+                    class="sidebar-link {{ request()->routeIs('sales.rekening.*') ? 'active' : '' }} {{ !$salesAktif ? 'opacity-40 pointer-events-none' : '' }}">
+                        <svg class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="1.8">
+                            <path stroke-linecap="round" stroke-linejoin="round" d="M3 10h18M7 15h1m4 0h1m-7 4h12a3 3 0 003-3V8a3 3 0 00-3-3H6a3 3 0 00-3 3v8a3 3 0 003 3z"/>
+                        </svg>
+                        Rekening Bank
+                        @if(!$salesAktif)<span class="ml-auto text-[10px] text-ink/30">🔒</span>@endif
+                    </a>
+
+                    <a href="{{ route('sales.pencairan.index') }}"
+                    class="sidebar-link {{ request()->routeIs('sales.pencairan.*') ? 'active' : '' }} {{ !$salesAktif ? 'opacity-40 pointer-events-none' : '' }}">
+                        <svg class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="1.8">
+                            <path stroke-linecap="round" stroke-linejoin="round" d="M17 9V7a4 4 0 00-8 0v2m-1 8h10a2 2 0 002-2v-6a2 2 0 00-2-2H8a2 2 0 00-2 2v6a2 2 0 002 2z"/>
+                        </svg>
+                        Pencairan Dana
+                        @if(!$salesAktif)<span class="ml-auto text-[10px] text-ink/30">🔒</span>@endif
                     </a>
 
                     <p class="font-mono text-[10px] uppercase tracking-widest text-ink/30 px-3 pt-5 pb-1.5">Akun</p>
 
-                    <a href="{{ route('sales.profil.index') }}" class="sidebar-link {{ request()->routeIs('sales.profil.*') ? 'active' : '' }}">
+                    {{-- Dokumen — selalu bisa diakses --}}
+                    <a href="{{ route('sales.dokumen') }}"
+                    class="sidebar-link {{ request()->routeIs('sales.dokumen*') ? 'active' : '' }}">
+                        <svg class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="1.8">
+                            <path stroke-linecap="round" stroke-linejoin="round" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"/>
+                        </svg>
+                        Dokumen Identitas
+                        @php $statusDok = auth()->user()->statusVerifikasiDokumen?->kode; @endphp
+                        @if(!$statusDok)
+                            <span class="ml-auto text-[10px] px-1.5 py-0.5 rounded-full bg-yellow-400 text-yellow-900">Belum</span>
+                        @elseif($statusDok === 'pending')
+                            <span class="ml-auto text-[10px] px-1.5 py-0.5 rounded-full bg-blue-100 text-blue-700">Review</span>
+                        @elseif($statusDok === 'rejected')
+                            <span class="ml-auto text-[10px] px-1.5 py-0.5 rounded-full bg-red-100 text-red-700">Ditolak</span>
+                        @endif
+                    </a>
+
+                    <a href="{{ route('sales.profil.index') }}"
+                    class="sidebar-link {{ request()->routeIs('sales.profil.*') ? 'active' : '' }}">
                         <svg class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="1.8">
                             <path stroke-linecap="round" stroke-linejoin="round" d="M19 21V5a2 2 0 00-2-2H7a2 2 0 00-2 2v16m14 0h2M5 21H3m16 0h-5m-7 0h7"/>
                         </svg>
@@ -293,31 +376,81 @@
 
                 {{-- ── COURIER ── --}}
                 @role('courier')
-                <p class="font-mono text-[10px] uppercase tracking-widest text-ink/30 px-3 pt-5 pb-1.5">Pengiriman</p>
+                    @php
+                        $dokumenVerifiedKurir = auth()->user()->statusVerifikasiDokumen?->kode === 'verified';
+                    @endphp
 
-                <a href="{{ route('courier.dashboard') }}" class="sidebar-link {{ request()->routeIs('courier.dashboard') ? 'active' : '' }}">
-                    <svg class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="1.8">
-                        <path stroke-linecap="round" stroke-linejoin="round" d="M8 7h12m0 0l-4-4m4 4l-4 4m0 6H4m0 0l4 4m-4-4l4-4"/>
-                    </svg>
-                    Tugas Aktif
-                </a>
+                    <p class="font-mono text-[10px] uppercase tracking-widest text-ink/30 px-3 pt-5 pb-1.5">Pengiriman</p>
 
-                <a href="{{ route('courier.pengiriman.index') }}" class="sidebar-link {{ request()->routeIs('courier.pengiriman.*') ? 'active' : '' }}">
-                    <svg class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="1.8">
-                        <path stroke-linecap="round" stroke-linejoin="round" d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M5 12h14"/>
-                    </svg>
-                    Daftar Pengiriman
-                </a>
+                    <a href="{{ route('courier.dashboard') }}"
+                    class="sidebar-link {{ request()->routeIs('courier.dashboard') ? 'active' : '' }}">
+                        <svg class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="1.8">
+                            <path stroke-linecap="round" stroke-linejoin="round" d="M8 7h12m0 0l-4-4m4 4l-4 4m0 6H4m0 0l4 4m-4-4l4-4"/>
+                        </svg>
+                        Tugas Aktif
+                    </a>
 
-                <p class="font-mono text-[10px] uppercase tracking-widest text-ink/30 px-3 pt-5 pb-1.5">Akun</p>
+                    <a href="{{ route('courier.pengiriman.index') }}"
+                    class="sidebar-link {{ request()->routeIs('courier.pengiriman.*') ? 'active' : '' }} {{ !$dokumenVerifiedKurir ? 'opacity-40 pointer-events-none' : '' }}">
+                        <svg class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="1.8">
+                            <path stroke-linecap="round" stroke-linejoin="round" d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M5 12h14"/>
+                        </svg>
+                        Daftar Pengiriman
+                        @if(!$dokumenVerifiedKurir)<span class="ml-auto text-[10px] text-ink/30">🔒</span>@endif
+                    </a>
 
-                <a href="#" class="sidebar-link">
-                    <svg class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="1.8">
-                        <path stroke-linecap="round" stroke-linejoin="round" d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z"/>
-                    </svg>
-                    Profil Saya
-                </a>
-            @endrole
+                    <a href="{{ route('courier.pendapatan.index') }}"
+                    class="sidebar-link {{ request()->routeIs('courier.pendapatan.*') ? 'active' : '' }} {{ !$dokumenVerifiedKurir ? 'opacity-40 pointer-events-none' : '' }}">
+                        <svg class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="1.8">
+                            <path stroke-linecap="round" stroke-linejoin="round" d="M3 10h18M7 15h1m4 0h1m-7 4h12a3 3 0 003-3V8a3 3 0 00-3-3H6a3 3 0 00-3 3v8a3 3 0 003 3z"/>
+                        </svg>
+                        Pendapatan
+                        @if(!$dokumenVerifiedKurir)<span class="ml-auto text-[10px] text-ink/30">🔒</span>@endif
+                    </a>
+
+                    <a href="{{ route('courier.rekening.index') }}"
+                    class="sidebar-link {{ request()->routeIs('courier.rekening.*') ? 'active' : '' }} {{ !$dokumenVerifiedKurir ? 'opacity-40 pointer-events-none' : '' }}">
+                        <svg class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="1.8">
+                            <path stroke-linecap="round" stroke-linejoin="round" d="M3 10h18M7 15h1m4 0h1m-7 4h12a3 3 0 003-3V8a3 3 0 00-3-3H6a3 3 0 00-3 3v8a3 3 0 003 3z"/>
+                        </svg>
+                        Rekening Bank
+                        @if(!$dokumenVerifiedKurir)<span class="ml-auto text-[10px] text-ink/30">🔒</span>@endif
+                    </a>
+
+                    <a href="{{ route('courier.pencairan.index') }}"
+                    class="sidebar-link {{ request()->routeIs('courier.pencairan.*') ? 'active' : '' }} {{ !$dokumenVerifiedKurir ? 'opacity-40 pointer-events-none' : '' }}">
+                        <svg class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="1.8">
+                            <path stroke-linecap="round" stroke-linejoin="round" d="M17 9V7a4 4 0 00-8 0v2m-1 8h10a2 2 0 002-2v-6a2 2 0 00-2-2H8a2 2 0 00-2 2v6a2 2 0 002 2z"/>
+                        </svg>
+                        Pencairan Dana
+                        @if(!$dokumenVerifiedKurir)<span class="ml-auto text-[10px] text-ink/30">🔒</span>@endif
+                    </a>
+
+                    <p class="font-mono text-[10px] uppercase tracking-widest text-ink/30 px-3 pt-5 pb-1.5">Akun</p>
+
+                    <a href="{{ route('courier.dokumen') }}"
+                    class="sidebar-link {{ request()->routeIs('courier.dokumen*') ? 'active' : '' }}">
+                        <svg class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="1.8">
+                            <path stroke-linecap="round" stroke-linejoin="round" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"/>
+                        </svg>
+                        Dokumen Identitas
+                        @php $statusDokKurir = auth()->user()->statusVerifikasiDokumen?->kode; @endphp
+                        @if(!$statusDokKurir)
+                            <span class="ml-auto text-[10px] px-1.5 py-0.5 rounded-full bg-yellow-400 text-yellow-900">Belum</span>
+                        @elseif($statusDokKurir === 'pending')
+                            <span class="ml-auto text-[10px] px-1.5 py-0.5 rounded-full bg-blue-100 text-blue-700">Review</span>
+                        @elseif($statusDokKurir === 'rejected')
+                            <span class="ml-auto text-[10px] px-1.5 py-0.5 rounded-full bg-red-100 text-red-700">Ditolak</span>
+                        @endif
+                    </a>
+
+                    <a href="#" class="sidebar-link">
+                        <svg class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="1.8">
+                            <path stroke-linecap="round" stroke-linejoin="round" d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z"/>
+                        </svg>
+                        Profil Saya
+                    </a>
+                @endrole
             </nav>
 
             {{-- User info + logout --}}

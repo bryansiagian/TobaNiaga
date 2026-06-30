@@ -80,4 +80,51 @@ class Umkm extends Model
     {
         return $this->belongsTo(StatusUmkm::class, 'status_id');
     }
+
+    public function rekeningBank()
+    {
+        return $this->hasMany(RekeningBank::class, 'umkm_id');
+    }
+
+    public function pencairanDana()
+    {
+        return $this->hasMany(PencairanDana::class, 'umkm_id');
+    }
+
+    // ── Saldo & pesanan eligible pencairan ──────────────────────
+
+    /**
+     * Pesanan yang statusnya "selesai", sudah settlement,
+     * dan belum pernah masuk pencairan yang masih aktif (diajukan/diproses/selesai).
+     */
+    public function pesananEligibleDicairkan()
+    {
+        return $this->pesanan()
+            ->whereHas('status', fn($q) => $q->where('kode', 'selesai'))
+            ->whereHas('pembayaran.status', fn($q) => $q->where('kode', 'settlement'))
+            ->whereDoesntHave('pencairanDanaDetail', function ($q) {
+                $q->whereHas('pencairanDana', fn($q2) => $q2->whereIn('status', ['diajukan', 'diproses', 'selesai']));
+            });
+    }
+
+    public function saldoTersedia(): float
+    {
+        return (float) $this->pesananEligibleDicairkan()
+            ->get()
+            ->sum(fn($p) => $p->total_harga - $p->ongkos_kirim);
+    }
+
+    public function totalSudahDicairkan(): float
+    {
+        return (float) $this->pencairanDana()
+            ->where('status', 'selesai')
+            ->sum('jumlah');
+    }
+
+    public function totalSedangDiproses(): float
+    {
+        return (float) $this->pencairanDana()
+            ->whereIn('status', ['diajukan', 'diproses'])
+            ->sum('jumlah');
+    }
 }

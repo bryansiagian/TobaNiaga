@@ -21,7 +21,7 @@ class DatabaseSeeder extends Seeder
             KategoriProdukSeeder::class,
             RoleSeeder::class,
             UserSeeder::class,
-            ProductSeeder::class,
+            // ProductSeeder::class,
         ]);
     }
 }

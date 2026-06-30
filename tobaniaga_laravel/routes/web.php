@@ -16,6 +16,18 @@ use App\Http\Controllers\Courier\CourierController;
 use App\Http\Controllers\Customer\AlamatCustomerController;
 use App\Http\Controllers\Sales\SalesPromoController;
 use App\Http\Controllers\Admin\AdminPromoController;
+use App\Http\Controllers\Sales\SalesRekeningController;
+use App\Http\Controllers\Sales\SalesPencairanController;
+use App\Http\Controllers\Admin\AdminPencairanController;
+use App\Http\Controllers\Admin\AdminOngkirController;
+use App\Http\Controllers\PendaftaranController;
+use App\Http\Controllers\Courier\CourierDokumenController;
+use App\Http\Controllers\Sales\SalesDokumenController;
+use App\Http\Controllers\Admin\AdminVerifikasiDokumenController;
+use App\Http\Controllers\Courier\CourierRekeningController;
+use App\Http\Controllers\Courier\CourierPencairanController;
+use App\Http\Controllers\Courier\CourierPendapatanController;
+use App\Http\Controllers\Admin\AdminPencairanKurirController;
 use Illuminate\Support\Facades\Route;
 
 /*
@@ -106,6 +118,32 @@ Route::middleware('auth')->group(function () {
         Route::put('/promo/{promo}',            [AdminPromoController::class, 'update'])->name('promo.update');
         Route::delete('/promo/{promo}',         [AdminPromoController::class, 'destroy'])->name('promo.destroy');
         Route::patch('/promo/{promo}/toggle',   [AdminPromoController::class, 'toggle'])->name('promo.toggle');
+
+        // Pencairan Dana
+        Route::get('/pencairan',                  [AdminPencairanController::class, 'index'])->name('pencairan.index');
+        Route::get('/pencairan/{pencairanDana}',  [AdminPencairanController::class, 'show'])->name('pencairan.show');
+        Route::post('/pencairan/{pencairanDana}/proses', [AdminPencairanController::class, 'proses'])->name('pencairan.proses');
+        Route::post('/pencairan/{pencairanDana}/selesai', [AdminPencairanController::class, 'selesai'])->name('pencairan.selesai');
+        Route::post('/pencairan/{pencairanDana}/tolak',   [AdminPencairanController::class, 'tolak'])->name('pencairan.tolak');
+
+        Route::get('/pencairan-kurir',                    [AdminPencairanKurirController::class, 'index'])->name('pencairan-kurir.index');
+        Route::get('/pencairan-kurir/{pencairanDanaKurir}', [AdminPencairanKurirController::class, 'show'])->name('pencairan-kurir.show');
+        Route::post('/pencairan-kurir/{pencairanDanaKurir}/proses',  [AdminPencairanKurirController::class, 'proses'])->name('pencairan-kurir.proses');
+        Route::post('/pencairan-kurir/{pencairanDanaKurir}/selesai', [AdminPencairanKurirController::class, 'selesai'])->name('pencairan-kurir.selesai');
+        Route::post('/pencairan-kurir/{pencairanDanaKurir}/tolak',   [AdminPencairanKurirController::class, 'tolak'])->name('pencairan-kurir.tolak');
+
+        // Ongkos Kirim
+        Route::get('/ongkir',                [AdminOngkirController::class, 'index'])->name('ongkir.index');
+        Route::post('/ongkir',               [AdminOngkirController::class, 'store'])->name('ongkir.store');
+        Route::put('/ongkir/{ongkosKirimTrayek}', [AdminOngkirController::class, 'update'])->name('ongkir.update');
+        Route::delete('/ongkir/{ongkosKirimTrayek}', [AdminOngkirController::class, 'destroy'])->name('ongkir.destroy');
+        Route::patch('/ongkir/{ongkosKirimTrayek}/toggle', [AdminOngkirController::class, 'toggle'])->name('ongkir.toggle');
+
+        // Verifikasi Dokumen
+        Route::get('/verifikasi-dokumen',                    [AdminVerifikasiDokumenController::class, 'index'])->name('verifikasi.dokumen.index');
+        Route::get('/verifikasi-dokumen/{user}',             [AdminVerifikasiDokumenController::class, 'show'])->name('verifikasi.dokumen.show');
+        Route::post('/verifikasi-dokumen/{user}/approve',    [AdminVerifikasiDokumenController::class, 'approve'])->name('verifikasi.dokumen.approve');
+        Route::post('/verifikasi-dokumen/{user}/reject',     [AdminVerifikasiDokumenController::class, 'reject'])->name('verifikasi.dokumen.reject');
     });
 
     Route::middleware(['auth', 'role:sales'])->prefix('sales')->name('sales.')->group(function () {
@@ -139,6 +177,19 @@ Route::middleware('auth')->group(function () {
         Route::delete('/promo/{promo}',     [SalesPromoController::class, 'destroy'])->name('promo.destroy');
         Route::patch('/promo/{promo}/toggle', [SalesPromoController::class, 'toggle'])->name('promo.toggle');
 
+        // Rekening Bank
+        Route::get('/rekening',                  [SalesRekeningController::class, 'index'])->name('rekening.index');
+        Route::post('/rekening',                 [SalesRekeningController::class, 'store'])->name('rekening.store');
+        Route::put('/rekening/{rekeningBank}',   [SalesRekeningController::class, 'update'])->name('rekening.update');
+        Route::delete('/rekening/{rekeningBank}',[SalesRekeningController::class, 'destroy'])->name('rekening.destroy');
+        Route::patch('/rekening/{rekeningBank}/utama', [SalesRekeningController::class, 'setUtama'])->name('rekening.utama');
+
+        // Pencairan Dana
+        Route::get('/pencairan',         [SalesPencairanController::class, 'index'])->name('pencairan.index');
+        Route::post('/pencairan',        [SalesPencairanController::class, 'store'])->name('pencairan.store');
+
+        Route::get('/dokumen',  [SalesDokumenController::class, 'form'])->name('dokumen');
+        Route::post('/dokumen', [SalesDokumenController::class, 'store'])->name('dokumen.store');
 
     });
 
@@ -177,6 +228,9 @@ Route::middleware('auth')->group(function () {
         // Promo
         Route::post('/checkout/apply-promo', [CustomerCheckoutController::class, 'applyPromo'])->name('checkout.apply-promo');
 
+        Route::get('/checkout/resume', [CustomerCheckoutController::class, 'resume'])->name('checkout.resume');
+        Route::post('/checkout/hitung-ongkir', [CustomerCheckoutController::class, 'hitungOngkir'])->name('checkout.hitung-ongkir');
+
     });
 
     Route::middleware(['auth', 'role:courier'])->prefix('courier')->name('courier.')->group(function () {
@@ -184,7 +238,33 @@ Route::middleware('auth')->group(function () {
         Route::get('/pengiriman',                             [CourierController::class, 'pengirimanIndex'])->name('pengiriman.index');
         Route::post('/pengiriman/{pengiriman}/claim',         [CourierController::class, 'claim'])->name('pengiriman.claim');
         Route::patch('/pengiriman/{pengiriman}/status',       [CourierController::class, 'updateStatus'])->name('pengiriman.status');
+
+        Route::get('/dokumen',  [CourierDokumenController::class, 'form'])->name('dokumen');
+        Route::post('/dokumen', [CourierDokumenController::class, 'store'])->name('dokumen.store');
+
+        Route::get('/rekening',                       [CourierRekeningController::class, 'index'])->name('rekening.index');
+        Route::post('/rekening',                      [CourierRekeningController::class, 'store'])->name('rekening.store');
+        Route::put('/rekening/{rekeningBankKurir}',   [CourierRekeningController::class, 'update'])->name('rekening.update');
+        Route::delete('/rekening/{rekeningBankKurir}',[CourierRekeningController::class, 'destroy'])->name('rekening.destroy');
+        Route::patch('/rekening/{rekeningBankKurir}/utama', [CourierRekeningController::class, 'setUtama'])->name('rekening.utama');
+
+        Route::get('/pencairan',  [CourierPencairanController::class, 'index'])->name('pencairan.index');
+        Route::post('/pencairan', [CourierPencairanController::class, 'store'])->name('pencairan.store');
+
+        Route::get('/pendapatan', [CourierPendapatanController::class, 'index'])->name('pendapatan.index');
     });
+
+    Route::prefix('daftar')->name('daftar.')->group(function () {
+        Route::get('/sales',  [PendaftaranController::class, 'formSales'])->name('sales');
+        Route::post('/sales', [PendaftaranController::class, 'storeSales'])->name('sales.store');
+
+        Route::get('/kurir',  [PendaftaranController::class, 'formKurir'])->name('kurir');
+        Route::post('/kurir', [PendaftaranController::class, 'storeKurir'])->name('kurir.store');
+    });
+
+    Route::get('/dokumen/{user}/{tipe}', [PendaftaranController::class, 'lihatDokumen'])
+        ->name('dokumen.lihat')
+        ->where('tipe', 'ktp|kk');
 });
 
 // Webhook — di luar grup auth

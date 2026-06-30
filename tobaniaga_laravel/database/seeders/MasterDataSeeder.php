@@ -22,6 +22,13 @@ class MasterDataSeeder extends Seeder
             ['kode' => 'rejected', 'label' => 'Ditolak'],
         ]);
 
+        // Status Verifikasi Dokumen untuk Sales & Kurir
+        DB::table('status_verifikasi_dokumen')->insert([
+            ['kode' => 'pending',  'label' => 'Menunggu Verifikasi'],
+            ['kode' => 'verified', 'label' => 'Terverifikasi'],
+            ['kode' => 'rejected', 'label' => 'Ditolak'],
+        ]);
+
         // Status UMKM
         DB::table('status_umkm')->insert([
             ['kode' => 'aktif',    'label' => 'Aktif'],

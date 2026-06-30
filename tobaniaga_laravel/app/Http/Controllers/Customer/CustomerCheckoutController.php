@@ -13,6 +13,7 @@ use App\Models\Promo;
 use App\Models\StatusPembayaran;
 use App\Models\StatusPesanan;
 use App\Models\Umkm;
+use App\Models\OngkosKirimTrayek;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
@@ -57,6 +58,7 @@ class CustomerCheckoutController extends Controller
             'umkm_id'       => $request->umkm_id,
             'keranjang_ids' => $request->keranjang_ids,
         ]]);
+        session(['checkout_return_url' => route('customer.checkout.resume')]);
 
         return view('customer.checkout.create', compact(
             'items', 'umkm', 'alamatList', 'metodePengiriman', 'subtotal',
@@ -71,6 +73,28 @@ class CustomerCheckoutController extends Controller
         }
 
         return $this->create(new Request($data));
+    }
+
+    // ── AJAX: hitung ongkir berdasarkan alamat yang dipilih ─────
+    public function hitungOngkir(Request $request): JsonResponse
+    {
+        $request->validate([
+            'umkm_id'   => ['required', 'exists:umkm,id'],
+            'alamat_id' => ['required', 'exists:alamat_customer,id'],
+        ]);
+
+        $umkm   = Umkm::findOrFail($request->umkm_id);
+        $alamat = AlamatCustomer::where('id', $request->alamat_id)
+            ->where('user_id', Auth::id())
+            ->firstOrFail();
+
+        $ongkos = OngkosKirimTrayek::cariOngkos($umkm->kecamatan, $alamat->kecamatan);
+
+        return response()->json([
+            'ongkos'     => $ongkos ?? 0,
+            'tersedia'   => $ongkos !== null,
+            'ongkos_fmt' => 'Rp' . number_format($ongkos ?? 0, 0, ',', '.'),
+        ]);
     }
 
     // ── AJAX: validasi & hitung diskon promo ────────────────
@@ -150,16 +174,23 @@ class CustomerCheckoutController extends Controller
             }
         }
 
+        $umkm   = Umkm::findOrFail($validated['umkm_id']);
         $metode = MetodePengiriman::findOrFail($validated['metode_pengiriman_id']);
+
         if ($metode->kode !== 'ambil_ditempat' && empty($validated['alamat_id'])) {
             return back()->with('error', 'Alamat pengiriman wajib diisi untuk metode kurir.');
         }
 
-        // Hitung subtotal & diskon
-        $subtotal    = $items->sum(fn($i) => $i->produk->harga * $i->jumlah);
-        $ongkosKirim = $metode->kode === 'ambil_ditempat' ? 0 : 10000;
-        $diskon      = 0;
-        $promo       = null;
+        // Hitung ongkir real berdasarkan trayek
+        $ongkosKirim = 0;
+        if ($metode->kode !== 'ambil_ditempat') {
+            $alamat = AlamatCustomer::findOrFail($validated['alamat_id']);
+            $ongkosKirim = OngkosKirimTrayek::cariOngkos($umkm->kecamatan, $alamat->kecamatan) ?? 0;
+        }
+
+        $subtotal = $items->sum(fn($i) => $i->produk->harga * $i->jumlah);
+        $diskon   = 0;
+        $promo    = null;
 
         if (!empty($validated['promo_kode'])) {
             $promo = Promo::where('kode', strtoupper(trim($validated['promo_kode'])))->first();
@@ -201,7 +232,6 @@ class CustomerCheckoutController extends Controller
                 ]);
             }
 
-            // Increment terpakai promo
             if ($promo) {
                 $promo->increment('terpakai');
             }
@@ -212,8 +242,6 @@ class CustomerCheckoutController extends Controller
                 'jumlah'            => $totalHarga,
                 'status_id'         => $statusPending->id,
             ]);
-
-            Keranjang::whereIn('id', $items->pluck('id'))->delete();
 
             session(['checkout_pesanan_id' => $pesanan->id]);
         });

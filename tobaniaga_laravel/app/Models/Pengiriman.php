@@ -44,4 +44,9 @@ class Pengiriman extends Model
     {
         return $this->hasMany(PengirimanLog::class, 'pengiriman_id');
     }
+
+    public function pencairanDanaKurirDetail()
+    {
+        return $this->hasMany(PencairanDanaKurirDetail::class, 'pengiriman_id');
+    }
 }

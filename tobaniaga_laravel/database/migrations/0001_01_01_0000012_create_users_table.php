@@ -12,9 +12,21 @@ return new class extends Migration
             $table->id();
             $table->string('nama');
             $table->string('email')->unique();
-            $table->string('no_hp');
-            $table->string('password');
+            $table->text('nik')->nullable();
+            $table->date('tanggal_lahir')->nullable();
+            $table->string('no_hp')->nullable();
+            $table->text('alamat_ktp')->nullable();
+            $table->string('foto_ktp')->nullable();
+            $table->string('foto_kk')->nullable();
             $table->string('foto_profil')->nullable();
+
+            $table->foreignId('status_verifikasi_dokumen_id')
+                  ->nullable()
+                  ->constrained('status_verifikasi_dokumen')
+                  ->nullOnDelete();
+
+            $table->text('catatan_penolakan_dokumen')->nullable();
+            $table->string('password');
             $table->foreignId('status_id')
                   ->constrained('status_user')
                   ->restrictOnDelete();

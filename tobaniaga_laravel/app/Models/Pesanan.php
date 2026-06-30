@@ -79,4 +79,9 @@ class Pesanan extends Model
     {
         return $this->hasMany(Ulasan::class, 'pesanan_id');
     }
+
+    public function pencairanDanaDetail()
+    {
+        return $this->hasMany(PencairanDanaDetail::class, 'pesanan_id');
+    }
 }

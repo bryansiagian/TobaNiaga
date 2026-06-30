@@ -65,6 +65,12 @@ return new class extends Migration
             $table->string('label');
             $table->unsignedTinyInteger('urutan');
         });
+
+        Schema::create('status_verifikasi_dokumen', function (Blueprint $table) {
+            $table->id();
+            $table->string('kode');
+            $table->string('label');
+        });
     }
 
     public function down(): void
@@ -76,6 +82,7 @@ return new class extends Migration
         Schema::dropIfExists('status_produk');
         Schema::dropIfExists('status_umkm');
         Schema::dropIfExists('status_verifikasi_umkm');
+        Schema::dropIfExists('status_verifikasi_dokumen');
         Schema::dropIfExists('status_user');
     }
 };

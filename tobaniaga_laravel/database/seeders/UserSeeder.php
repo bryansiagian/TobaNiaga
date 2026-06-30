@@ -23,6 +23,12 @@ class UserSeeder extends Seeder
                 'role' => 'admin',
             ],
             [
+                'nama' => 'Administrator 2',
+                'email' => 'admin2@gmail.com',
+                'no_hp' => '081234567890',
+                'role' => 'admin',
+            ],
+            [
                 'nama' => 'Sales User',
                 'email' => 'sales@gmail.com',
                 'no_hp' => '081234567891',

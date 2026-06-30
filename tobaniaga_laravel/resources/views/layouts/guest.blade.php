@@ -213,6 +213,24 @@
 
                         <hr class="border-lake-900/8 my-1">
 
+                        @role('customer')
+                            <a href="{{ route('daftar.sales') }}"
+                            class="flex items-center gap-3 px-4 py-2.5 text-sm text-ink/70 hover:bg-lake-900/5 transition-colors">
+                                <svg class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="1.8">
+                                    <path stroke-linecap="round" stroke-linejoin="round" d="M3 21v-4m0 0V5a2 2 0 012-2h6.5l1 1H21l-3 6 3 6h-8.5l-1-1H5a2 2 0 00-2 2zm9-13.5V9"/>
+                                </svg>
+                                Jadi Penjual
+                            </a>
+                            <a href="{{ route('daftar.kurir') }}"
+                            class="flex items-center gap-3 px-4 py-2.5 text-sm text-ink/70 hover:bg-lake-900/5 transition-colors">
+                                <svg class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="1.8">
+                                    <path stroke-linecap="round" stroke-linejoin="round" d="M8 7h12m0 0l-4-4m4 4l-4 4m0 6H4m0 0l4 4m-4-4l4-4"/>
+                                </svg>
+                                Jadi Kurir
+                            </a>
+                            <hr class="border-lake-900/8 my-1">
+                            @endrole
+
                         <form method="POST" action="{{ route('logout') }}">
                             @csrf
                             <button type="submit"
