@@ -42,7 +42,10 @@ Route::get('/', function () {
         ->latest()
         ->take(10)
         ->get();
-    return view('welcome', compact('produkTerbaru'));
+
+    $kategoriProduk = \App\Models\KategoriProduk::withCount('produk')->get();
+
+    return view('welcome', compact('produkTerbaru', 'kategoriProduk'));
 })->name('welcome');
 
 // Halaman katalog produk publik (customer & guest) — dengan filter
