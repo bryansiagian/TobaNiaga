@@ -101,8 +101,7 @@
 
             {{-- Logo --}}
             <a href="{{ url('/') }}" class="flex items-center gap-2.5 focus-ring rounded flex-shrink-0">
-                <span class="w-2.5 h-7 ulos-stripe-v rounded-sm"></span>
-                <span class="font-display text-2xl font-semibold tracking-tight text-lake-900">TobaNiaga</span>
+                <img src="{{ asset('images/logo-tobaniaga.png') }}" alt="TobaNiaga" class="h-14 w-14 rounded-lg object-contain">
             </a>
 
             {{-- Desktop links --}}

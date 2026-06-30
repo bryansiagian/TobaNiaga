@@ -107,10 +107,9 @@
             {{-- Logo --}}
             <div class="px-5 py-5 border-b border-lake-900/10">
                 <a href="{{ url('/') }}" class="flex items-center gap-2.5 focus-ring rounded">
-                    <span class="w-2 h-6 rounded-sm inline-block" style="background: repeating-linear-gradient(180deg, #8f2333 0 4px, #c49044 4px 7px, #1a4a6b 7px 11px)"></span>
-                    <span class="font-display text-xl font-semibold text-lake-900">TobaNiaga</span>
+                    <img src="{{ asset('images/logo-tobaniaga.png') }}" alt="TobaNiaga" class="h-10 w-10 rounded-lg object-contain">
                 </a>
-                <p class="font-mono text-[10px] uppercase tracking-widest text-ink/40 mt-1 ml-[22px]">
+                <p class="font-mono text-[10px] uppercase tracking-widest text-ink/40 mt-2">
                     @yield('role_label', 'Backoffice')
                 </p>
             </div>
