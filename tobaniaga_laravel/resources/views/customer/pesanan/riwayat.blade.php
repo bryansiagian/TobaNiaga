@@ -138,6 +138,17 @@
                         class="px-4 py-2 rounded-lg border border-lake-200 text-lake-900 text-xs font-medium hover:bg-white">
                             Lihat Detail
                         </a>
+                        @if($statusKode === 'selesai')
+                            @php
+                                $sudahUlasSemuaProduk = $item->ulasan->count() >= $item->detail->count();
+                            @endphp
+                            @if(!$sudahUlasSemuaProduk)
+                                <a href="{{ route('customer.pesanan.ulasan.create', $item) }}"
+                                class="px-4 py-2 rounded-lg bg-ulos-gold text-white text-xs font-semibold hover:opacity-90">
+                                    Beri Ulasan
+                                </a>
+                            @endif
+                        @endif
                     </div>
                 </div>
 

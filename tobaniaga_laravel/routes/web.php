@@ -28,6 +28,7 @@ use App\Http\Controllers\Courier\CourierRekeningController;
 use App\Http\Controllers\Courier\CourierPencairanController;
 use App\Http\Controllers\Courier\CourierPendapatanController;
 use App\Http\Controllers\Admin\AdminPencairanKurirController;
+use App\Http\Controllers\Customer\CustomerUlasanController;
 use Illuminate\Support\Facades\Route;
 
 /*
@@ -47,6 +48,10 @@ Route::get('/', function () {
 
     return view('welcome', compact('produkTerbaru', 'kategoriProduk'));
 })->name('welcome');
+
+Route::get('/tentang',    fn() => view('pages.tentang'))->name('tentang');
+Route::get('/untuk-siapa', fn() => view('pages.untuk-siapa'))->name('untuk-siapa');
+Route::get('/cara-kerja', fn() => view('pages.cara-kerja'))->name('cara-kerja');
 
 // Halaman katalog produk publik (customer & guest) — dengan filter
 Route::get('/produk', [App\Http\Controllers\ProdukPublikController::class, 'index'])->name('produk.index');
@@ -233,6 +238,10 @@ Route::middleware('auth')->group(function () {
 
         Route::get('/checkout/resume', [CustomerCheckoutController::class, 'resume'])->name('checkout.resume');
         Route::post('/checkout/hitung-ongkir', [CustomerCheckoutController::class, 'hitungOngkir'])->name('checkout.hitung-ongkir');
+
+        // Ulasan
+        Route::get('/pesanan/{pesanan}/ulasan',  [CustomerUlasanController::class, 'create'])->name('pesanan.ulasan.create');
+        Route::post('/pesanan/{pesanan}/ulasan', [CustomerUlasanController::class, 'store'])->name('pesanan.ulasan.store');
 
     });
 

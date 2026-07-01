@@ -86,10 +86,10 @@
     @php
         $currentRoute = Route::currentRouteName() ?? '';
         $navLinks = [
-            ['label' => 'Tentang',     'href' => url('/') . '#tentang',    'external' => true],
-            ['label' => 'Untuk Siapa', 'href' => url('/') . '#fitur',      'external' => true],
-            ['label' => 'Cara Kerja',  'href' => url('/') . '#cara-kerja', 'external' => true],
-            ['label' => 'Produk',      'href' => route('produk.index'),     'route' => 'produk.index'],
+            ['label' => 'Tentang',     'href' => route('tentang'),      'route' => 'tentang'],
+            ['label' => 'Untuk Siapa', 'href' => route('untuk-siapa'),  'route' => 'untuk-siapa'],
+            ['label' => 'Cara Kerja',  'href' => route('cara-kerja'),   'route' => 'cara-kerja'],
+            ['label' => 'Produk',      'href' => route('produk.index'), 'route' => 'produk.index'],
         ];
     @endphp
 
