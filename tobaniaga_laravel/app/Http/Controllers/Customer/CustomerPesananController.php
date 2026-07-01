@@ -11,7 +11,7 @@ class CustomerPesananController extends Controller
 {
     public function riwayat()
     {
-        $pesanan = Pesanan::with(['status', 'pembayaran', 'detail', 'umkm', 'pengiriman.status'])
+        $pesanan = Pesanan::with(['status', 'pembayaran', 'detail', 'umkm', 'pengiriman.status', 'ulasan'])
             ->where('customer_id', Auth::id())
             ->latest()
             ->paginate(10);

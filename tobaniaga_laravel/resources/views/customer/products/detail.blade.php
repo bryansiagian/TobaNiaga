@@ -215,7 +215,19 @@
                                 </div>
                             </div>
                             @if ($u->komentar)
-                                <p class="text-sm text-ink/70 leading-relaxed">{{ $u->komentar }}</p>
+                                <p class="text-sm text-ink/70 leading-relaxed mt-2">{{ $u->komentar }}</p>
+                            @endif
+
+                            @if (!empty($u->foto))
+                                <div class="flex flex-wrap gap-2 mt-3">
+                                    @foreach ($u->foto as $fotoPath)
+                                        <a href="{{ Storage::url($fotoPath) }}" target="_blank">
+                                            <img src="{{ Storage::url($fotoPath) }}"
+                                                alt="Foto ulasan"
+                                                class="w-20 h-20 rounded-lg object-cover border border-lake-900/10 hover:opacity-90 transition-opacity cursor-zoom-in">
+                                        </a>
+                                    @endforeach
+                                </div>
                             @endif
                         </div>
                     @endforeach
