@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Http\Controllers\Sales;
+namespace App\Http\Controllers\Courier;
 
 use App\Http\Controllers\Controller;
 use App\Models\EmailChangeToken;
@@ -13,63 +13,16 @@ use Illuminate\Support\Facades\Storage;
 use Illuminate\Validation\Rules\Password;
 use Illuminate\View\View;
 
-class SalesProfilController extends Controller
+class CourierProfilController extends Controller
 {
-    private function umkm()
-    {
-        return Auth::user()->umkm;
-    }
-
     public function index(): View
     {
         $user = Auth::user();
-        $umkm = $this->umkm();
 
-        return view('sales.profil.index', compact('user', 'umkm'));
+        return view('courier.profil.index', compact('user'));
     }
 
-    // ── Update data UMKM (sudah ada sebelumnya, tidak diubah) ────
-    public function update(Request $request): RedirectResponse
-    {
-        $umkm = $this->umkm();
-
-        $validated = $request->validate([
-            'nama_umkm'   => ['required', 'string', 'max:255'],
-            'deskripsi'   => ['nullable', 'string'],
-            'alamat'      => ['nullable', 'string', 'max:500'],
-            'provinsi'    => ['nullable', 'string', 'max:100'],
-            'kabupaten'   => ['nullable', 'string', 'max:100'],
-            'kecamatan'   => ['nullable', 'string', 'max:100'],
-            'desa'        => ['nullable', 'string', 'max:100'],
-            'no_hp_wa'    => ['nullable', 'string', 'max:20'],
-            'foto_profil' => ['nullable', 'image', 'mimes:jpg,jpeg,png,webp,avif', 'max:2048'],
-            'foto_banner' => ['nullable', 'image', 'mimes:jpg,jpeg,png,webp,avif', 'max:2048'],
-        ]);
-
-        if ($request->hasFile('foto_profil')) {
-            if ($umkm->foto_profil) {
-                Storage::disk('public')->delete($umkm->foto_profil);
-            }
-            $validated['foto_profil'] = $request->file('foto_profil')->store('umkm/profil', 'public');
-        } else {
-            unset($validated['foto_profil']);
-        }
-
-        if ($request->hasFile('foto_banner')) {
-            if ($umkm->foto_banner) {
-                Storage::disk('public')->delete($umkm->foto_banner);
-            }
-            $validated['foto_banner'] = $request->file('foto_banner')->store('umkm/banner', 'public');
-        } else {
-            unset($validated['foto_banner']);
-        }
-
-        $umkm->update($validated);
-
-        return back()->with('status_umkm', 'Profil UMKM berhasil diperbarui.');
-    }
-
-    // ── Update profil pribadi (data users) ───────────────────────
+    // ── Update profil pribadi ──────────────────────────────────
     public function updateProfil(Request $request): RedirectResponse
     {
         $user = Auth::user();
@@ -96,7 +49,7 @@ class SalesProfilController extends Controller
         return back()->with('status_profil', 'Profil pribadi berhasil diperbarui.');
     }
 
-    // ── Kirim OTP ke email baru ───────────────────────────────────
+    // ── Kirim OTP ke email baru ─────────────────────────────────
     public function kirimOtpEmail(Request $request): RedirectResponse
     {
         $request->validate([
@@ -122,7 +75,7 @@ class SalesProfilController extends Controller
         return back()->with('status_email', 'Kode OTP dikirim ke ' . $request->email_baru . '. Berlaku 10 menit.');
     }
 
-    // ── Verifikasi OTP dan ganti email ────────────────────────────
+    // ── Verifikasi OTP dan ganti email ──────────────────────────
     public function verifikasiOtpEmail(Request $request): RedirectResponse
     {
         $request->validate([
@@ -145,7 +98,7 @@ class SalesProfilController extends Controller
         return back()->with('status_email', 'Email berhasil diperbarui.');
     }
 
-    // ── Update password ────────────────────────────────────────────
+    // ── Update password ──────────────────────────────────────────
     public function updatePassword(Request $request): RedirectResponse
     {
         $request->validate([

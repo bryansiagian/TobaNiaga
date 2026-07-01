@@ -1,7 +1,7 @@
 @extends('layouts.backoffice')
 
 @section('title', 'Profil Saya')
-@section('role_label', 'Sales')
+@section('role_label', 'Kurir')
 @section('page_title', 'Profil Saya')
 
 @section('content')
@@ -9,7 +9,7 @@
 
     {{-- Tab navigation --}}
     <div class="flex gap-1 bg-lake-50 rounded-xl p-1 mb-8 border border-lake-900/10">
-        @foreach([['profil','Profil Pribadi'],['email','Email'],['password','Password'],['umkm','Profil UMKM']] as [$key,$label])
+        @foreach([['profil','Profil Pribadi'],['email','Email'],['password','Password']] as [$key,$label])
         <button @click="tab = '{{ $key }}'"
                 :class="tab === '{{ $key }}' ? 'bg-paper shadow-sm text-lake-900 font-semibold' : 'text-ink/50 hover:text-ink'"
                 class="flex-1 text-sm py-2 px-3 rounded-lg transition-all">
@@ -27,10 +27,9 @@
         @endif
 
         <div class="bg-paper border border-lake-900/10 rounded-xl p-6">
-            <form action="{{ route('sales.profil.pribadi.update') }}" method="POST"
+            <form action="{{ route('courier.profil.pribadi.update') }}" method="POST"
                   enctype="multipart/form-data" class="space-y-5">
                 @csrf
-                @method('POST')
 
                 <div class="flex items-center gap-4">
                     <div class="w-16 h-16 rounded-full overflow-hidden bg-lake-50 border border-lake-900/10 flex-shrink-0">
@@ -99,7 +98,7 @@
 
             <div class="border-t border-lake-900/10 pt-5">
                 <p class="text-sm font-semibold text-ink mb-3">Langkah 1 — Masukkan email baru</p>
-                <form action="{{ route('sales.profil.email.otp') }}" method="POST" class="flex gap-2">
+                <form action="{{ route('courier.profil.email.otp') }}" method="POST" class="flex gap-2">
                     @csrf
                     <input type="email" name="email_baru"
                            placeholder="emailbaru@contoh.com"
@@ -116,7 +115,7 @@
 
             <div class="border-t border-lake-900/10 pt-5">
                 <p class="text-sm font-semibold text-ink mb-3">Langkah 2 — Masukkan kode OTP</p>
-                <form action="{{ route('sales.profil.email.verifikasi') }}" method="POST" class="flex gap-2">
+                <form action="{{ route('courier.profil.email.verifikasi') }}" method="POST" class="flex gap-2">
                     @csrf
                     <input type="text" name="otp" maxlength="6"
                            placeholder="6 digit kode OTP"
@@ -141,7 +140,7 @@
         @endif
 
         <div class="bg-paper border border-lake-900/10 rounded-xl p-6">
-            <form action="{{ route('sales.profil.password') }}" method="POST" class="space-y-5">
+            <form action="{{ route('courier.profil.password') }}" method="POST" class="space-y-5">
                 @csrf
                 @method('PUT')
 
@@ -172,119 +171,6 @@
                     <button type="submit"
                             class="px-6 py-2.5 bg-lake-900 text-paper text-sm font-semibold rounded-lg hover:bg-lake-800">
                         Ganti Password
-                    </button>
-                </div>
-            </form>
-        </div>
-    </div>
-
-    {{-- ── Tab Profil UMKM ── --}}
-    <div x-show="tab === 'umkm'" x-cloak>
-        @if(session('status_umkm'))
-        <div class="mb-5 px-4 py-3 rounded-lg bg-lake-50 border border-lake-400/20 text-sm text-lake-800">
-            {{ session('status_umkm') }}
-        </div>
-        @endif
-
-        <div class="bg-paper border border-lake-900/10 rounded-xl p-6">
-            <form action="{{ route('sales.profil.update') }}" method="POST"
-                  enctype="multipart/form-data" class="space-y-5">
-                @csrf
-                @method('PUT')
-
-                {{-- Foto profil UMKM --}}
-                <div class="flex items-center gap-4">
-                    <div class="w-16 h-16 rounded-xl overflow-hidden bg-lake-50 border border-lake-900/10 flex-shrink-0">
-                        @if($umkm->foto_profil)
-                            <img src="{{ Storage::url($umkm->foto_profil) }}" class="w-full h-full object-cover">
-                        @else
-                            <div class="w-full h-full flex items-center justify-center text-xl font-bold text-lake-900/30">
-                                {{ Str::upper(Str::substr($umkm->nama_umkm, 0, 1)) }}
-                            </div>
-                        @endif
-                    </div>
-                    <div>
-                        <p class="text-sm font-medium text-lake-900 mb-1">Logo / Foto Profil UMKM</p>
-                        <input type="file" name="foto_profil" accept="image/*"
-                               class="text-xs text-ink/60 file:mr-2 file:py-1 file:px-3 file:rounded-lg file:border-0 file:text-xs file:font-medium file:bg-lake-50 file:text-lake-800 hover:file:bg-lake-100">
-                    </div>
-                </div>
-
-                {{-- Banner --}}
-                <div>
-                    <p class="text-sm font-medium text-lake-900 mb-2">Banner Toko</p>
-                    @if($umkm->foto_banner)
-                    <img src="{{ Storage::url($umkm->foto_banner) }}"
-                         class="w-full h-32 object-cover rounded-lg border border-lake-900/10 mb-2">
-                    @endif
-                    <input type="file" name="foto_banner" accept="image/*"
-                           class="text-xs text-ink/60 file:mr-2 file:py-1 file:px-3 file:rounded-lg file:border-0 file:text-xs file:font-medium file:bg-lake-50 file:text-lake-800 hover:file:bg-lake-100">
-                    <p class="text-xs text-ink/40 mt-1">Disarankan rasio 3:1, maks. 4MB</p>
-                </div>
-
-                <div>
-                    <label class="block text-xs font-semibold text-ink/40 uppercase tracking-wide mb-1.5">Nama UMKM</label>
-                    <input type="text" name="nama_umkm" value="{{ old('nama_umkm', $umkm->nama_umkm) }}"
-                           class="w-full border border-lake-900/15 rounded-lg px-3.5 py-2.5 text-sm text-ink focus:outline-none focus:ring-2 focus:ring-lake-900/20"
-                           required>
-                    @error('nama_umkm')<p class="text-xs text-ulos-maroon mt-1">{{ $message }}</p>@enderror
-                </div>
-
-                <div>
-                    <label class="block text-xs font-semibold text-ink/40 uppercase tracking-wide mb-1.5">Deskripsi</label>
-                    <textarea name="deskripsi" rows="3"
-                              class="w-full border border-lake-900/15 rounded-lg px-3.5 py-2.5 text-sm text-ink focus:outline-none focus:ring-2 focus:ring-lake-900/20 resize-none">{{ old('deskripsi', $umkm->deskripsi) }}</textarea>
-                    @error('deskripsi')<p class="text-xs text-ulos-maroon mt-1">{{ $message }}</p>@enderror
-                </div>
-
-                <div>
-                    <label class="block text-xs font-semibold text-ink/40 uppercase tracking-wide mb-1.5">Nomor WhatsApp Toko</label>
-                    <input type="text" name="no_hp_wa" value="{{ old('no_hp_wa', $umkm->no_hp_wa) }}"
-                           class="w-full border border-lake-900/15 rounded-lg px-3.5 py-2.5 text-sm text-ink focus:outline-none focus:ring-2 focus:ring-lake-900/20">
-                    @error('no_hp_wa')<p class="text-xs text-ulos-maroon mt-1">{{ $message }}</p>@enderror
-                </div>
-
-                <div class="grid grid-cols-2 gap-3">
-                    <div>
-                        <label class="block text-xs font-semibold text-ink/40 uppercase tracking-wide mb-1.5">Provinsi</label>
-                        <input type="text" name="provinsi" value="{{ old('provinsi', $umkm->provinsi) }}"
-                               class="w-full border border-lake-900/15 rounded-lg px-3.5 py-2.5 text-sm text-ink focus:outline-none focus:ring-2 focus:ring-lake-900/20">
-                    </div>
-                    <div>
-                        <label class="block text-xs font-semibold text-ink/40 uppercase tracking-wide mb-1.5">Kabupaten</label>
-                        <input type="text" name="kabupaten" value="{{ old('kabupaten', $umkm->kabupaten) }}"
-                               class="w-full border border-lake-900/15 rounded-lg px-3.5 py-2.5 text-sm text-ink focus:outline-none focus:ring-2 focus:ring-lake-900/20">
-                    </div>
-                </div>
-
-                <div class="grid grid-cols-2 gap-3">
-                    <div>
-                        <label class="block text-xs font-semibold text-ink/40 uppercase tracking-wide mb-1.5">Kecamatan</label>
-                        <input type="text" name="kecamatan" value="{{ old('kecamatan', $umkm->kecamatan) }}"
-                               class="w-full border border-lake-900/15 rounded-lg px-3.5 py-2.5 text-sm text-ink focus:outline-none focus:ring-2 focus:ring-lake-900/20"
-                               required>
-                        @error('kecamatan')<p class="text-xs text-ulos-maroon mt-1">{{ $message }}</p>@enderror
-                    </div>
-                    <div>
-                        <label class="block text-xs font-semibold text-ink/40 uppercase tracking-wide mb-1.5">Desa</label>
-                        <input type="text" name="desa" value="{{ old('desa', $umkm->desa) }}"
-                               class="w-full border border-lake-900/15 rounded-lg px-3.5 py-2.5 text-sm text-ink focus:outline-none focus:ring-2 focus:ring-lake-900/20"
-                               required>
-                        @error('desa')<p class="text-xs text-ulos-maroon mt-1">{{ $message }}</p>@enderror
-                    </div>
-                </div>
-
-                <div>
-                    <label class="block text-xs font-semibold text-ink/40 uppercase tracking-wide mb-1.5">Alamat Lengkap</label>
-                    <textarea name="alamat" rows="2"
-                              class="w-full border border-lake-900/15 rounded-lg px-3.5 py-2.5 text-sm text-ink focus:outline-none focus:ring-2 focus:ring-lake-900/20 resize-none">{{ old('alamat', $umkm->alamat) }}</textarea>
-                    @error('alamat')<p class="text-xs text-ulos-maroon mt-1">{{ $message }}</p>@enderror
-                </div>
-
-                <div class="pt-2">
-                    <button type="submit"
-                            class="px-6 py-2.5 bg-lake-900 text-paper text-sm font-semibold rounded-lg hover:bg-lake-800">
-                        Simpan Perubahan
                     </button>
                 </div>
             </form>

@@ -29,6 +29,8 @@ use App\Http\Controllers\Courier\CourierPencairanController;
 use App\Http\Controllers\Courier\CourierPendapatanController;
 use App\Http\Controllers\Admin\AdminPencairanKurirController;
 use App\Http\Controllers\Customer\CustomerUlasanController;
+use App\Http\Controllers\Customer\CustomerProfilController;
+use App\Http\Controllers\Courier\CourierProfilController;
 use Illuminate\Support\Facades\Route;
 
 /*
@@ -174,6 +176,10 @@ Route::middleware('auth')->group(function () {
         // Profil
         Route::get('/profil', [App\Http\Controllers\Sales\SalesProfilController::class, 'index'])->name('profil.index');
         Route::put('/profil', [App\Http\Controllers\Sales\SalesProfilController::class, 'update'])->name('profil.update');
+        Route::post('/profil/pribadi',          [App\Http\Controllers\Sales\SalesProfilController::class, 'updateProfil'])->name('profil.pribadi.update');
+        Route::post('/profil/email-otp',        [App\Http\Controllers\Sales\SalesProfilController::class, 'kirimOtpEmail'])->name('profil.email.otp');
+        Route::post('/profil/email-verifikasi', [App\Http\Controllers\Sales\SalesProfilController::class, 'verifikasiOtpEmail'])->name('profil.email.verifikasi');
+        Route::put('/profil/password',          [App\Http\Controllers\Sales\SalesProfilController::class, 'updatePassword'])->name('profil.password');
 
         // Lacak
         Route::get('/lacak/{pesanan}', [SalesLacakController::class, 'show'])->name('lacak.show');
@@ -243,6 +249,15 @@ Route::middleware('auth')->group(function () {
         Route::get('/pesanan/{pesanan}/ulasan',  [CustomerUlasanController::class, 'create'])->name('pesanan.ulasan.create');
         Route::post('/pesanan/{pesanan}/ulasan', [CustomerUlasanController::class, 'store'])->name('pesanan.ulasan.store');
 
+        // Profil
+        Route::get('/profil',                          [CustomerProfilController::class, 'index'])->name('profil.index');
+        Route::put('/profil',                          [CustomerProfilController::class, 'updateProfil'])->name('profil.update');
+        Route::post('/profil/email-otp',               [CustomerProfilController::class, 'kirimOtpEmail'])->name('profil.email.otp');
+        Route::post('/profil/email-verifikasi',        [CustomerProfilController::class, 'verifikasiOtpEmail'])->name('profil.email.verifikasi');
+        Route::put('/profil/password',                 [CustomerProfilController::class, 'updatePassword'])->name('profil.password');
+        Route::patch('/profil/alamat/{alamat}/utama',  [CustomerProfilController::class, 'setAlamatUtama'])->name('profil.alamat.utama');
+        Route::put('/profil/alamat/{alamat}',          [CustomerProfilController::class, 'updateAlamat'])->name('profil.alamat.update');
+
     });
 
     Route::middleware(['auth', 'role:courier'])->prefix('courier')->name('courier.')->group(function () {
@@ -264,6 +279,13 @@ Route::middleware('auth')->group(function () {
         Route::post('/pencairan', [CourierPencairanController::class, 'store'])->name('pencairan.store');
 
         Route::get('/pendapatan', [CourierPendapatanController::class, 'index'])->name('pendapatan.index');
+
+        // Profil
+        Route::get('/profil',                  [CourierProfilController::class, 'index'])->name('profil.index');
+        Route::post('/profil/pribadi',         [CourierProfilController::class, 'updateProfil'])->name('profil.pribadi.update');
+        Route::post('/profil/email-otp',       [CourierProfilController::class, 'kirimOtpEmail'])->name('profil.email.otp');
+        Route::post('/profil/email-verifikasi',[CourierProfilController::class, 'verifikasiOtpEmail'])->name('profil.email.verifikasi');
+        Route::put('/profil/password',         [CourierProfilController::class, 'updatePassword'])->name('profil.password');
     });
 
     Route::prefix('daftar')->name('daftar.')->group(function () {
