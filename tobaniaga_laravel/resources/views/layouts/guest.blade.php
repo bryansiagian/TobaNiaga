@@ -79,6 +79,9 @@
         }
     </style>
     @stack('styles')
+    <link rel="icon" type="image/png" href="{{ asset('images/logo-tobaniaga.png') }}">
+    <link rel="shortcut icon" href="{{ asset('images/logo-tobaniaga.png') }}">
+    <link rel="apple-touch-icon" href="{{ asset('images/logo-tobaniaga.png') }}">
 </head>
 <body class="font-sans text-ink antialiased">
 

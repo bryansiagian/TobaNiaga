@@ -20,7 +20,7 @@
     {{-- Kolom kanan: form --}}
     <div class="w-full lg:w-[58%] flex flex-col px-6 sm:px-12 lg:px-20 py-10 overflow-y-auto">
         <a href="{{ url('/') }}" class="flex items-center gap-2.5 focus-ring rounded w-fit">
-            <span class="w-2.5 h-7 ulos-stripe-v rounded-sm"></span>
+            <img src="{{ asset('images/logo-tobaniaga.png') }}" alt="TobaNiaga" class="h-9 w-9 object-contain">
             <span class="font-display text-2xl font-semibold tracking-tight text-lake-900">TobaNiaga</span>
         </a>
 
